@@ -11,9 +11,12 @@ function getWeightWidth(weight: number, maxAbs: number) {
   return 0.5 + (abs / maxAbs) * 2.5;
 }
 
-export default function FeedForwardViz() {
+interface FeedForwardVizProps {
+  selectedTokenIndex?: number;
+}
+
+export default function FeedForwardViz({ selectedTokenIndex = 0 }: FeedForwardVizProps) {
   const [data, setData] = useState<any>(null);
-  const [selectedIdx, setSelectedIdx] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,18 +32,18 @@ export default function FeedForwardViz() {
 
   const tokens: string[] = data.tokens;
   const layers: { name: string; values: Record<string, number[]> }[] = data.layers;
-  const token = tokens[selectedIdx];
+  const token = tokens[selectedTokenIndex];
   const numLayers = layers.length;
   const layerDims = layers.map((l) => l.values[token].length);
 
   // Layout
-  const neuronRadius = 18;
-  const layerGap = 120;
-  const neuronGap = 38;
+  const neuronRadius = 20;
+  const layerGap = 170;
+  const neuronGap = 60;
   const width = (numLayers - 1) * layerGap + 2 * neuronRadius + 120;
   const height = Math.max(...layerDims) * neuronGap + 2 * neuronRadius + 40;
   const leftPad = 60;
-  const topPad = 30;
+  const topPad = 50;
 
   // Find max abs value for line width normalization
   let maxAbs = 1;
@@ -55,23 +58,11 @@ export default function FeedForwardViz() {
     }
   }
 
-  // Token selector
-  function prevToken() {
-    setSelectedIdx((i) => (i - 1 + tokens.length) % tokens.length);
-  }
-  function nextToken() {
-    setSelectedIdx((i) => (i + 1) % tokens.length);
-  }
+
 
   return (
     <div style={{ width, margin: "0 auto", position: "relative" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18 }}>
-        <button onClick={prevToken} style={{ fontSize: 22, border: "none", background: "none", cursor: "pointer", color: "#888", marginRight: 12 }}>&larr;</button>
-        <span style={{ fontWeight: 700, fontSize: 22, margin: "0 8px" }}>
-          “{token}”
-        </span>
-        <button onClick={nextToken} style={{ fontSize: 22, border: "none", background: "none", cursor: "pointer", color: "#888", marginLeft: 12 }}>&rarr;</button>
-      </div>
+
       <svg width={width} height={height}>
         {/* Draw lines between layers */}
         {layers.slice(0, -1).map((layer, lIdx) => {
@@ -84,17 +75,34 @@ export default function FeedForwardViz() {
               const y1 = topPad + i * neuronGap + neuronRadius;
               const x2 = leftPad + (lIdx + 1) * layerGap + neuronRadius;
               const y2 = topPad + j * neuronGap + neuronRadius;
+              
+              // Control points for Bezier curve (S-curve)
+              const dx = (x2 - x1) * 0.5;
+              const c1x = x1 + dx;
+              const c1y = y1;
+              const c2x = x2 - dx;
+              const c2y = y2;
+              const pathD = `M ${x1} ${y1} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${x2} ${y2}`;
+              
               return (
-                <line
-                  key={`l${lIdx}-n${i}-to-n${j}`}
-                  x1={x1}
-                  y1={y1}
-                  x2={x2}
-                  y2={y2}
-                  stroke={getWeightColor(fromVal)}
-                  strokeWidth={getWeightWidth(fromVal, maxAbs)}
-                  opacity={0.25}
-                />
+                <g key={`l${lIdx}-n${i}-to-n${j}`}>
+                  {/* Background curve */}
+                  <path
+                    d={pathD}
+                    fill="none"
+                    stroke={getWeightColor(fromVal)}
+                    strokeWidth={getWeightWidth(fromVal, maxAbs)}
+                    opacity={0.15}
+                  />
+                  {/* Main curve */}
+                  <path
+                    d={pathD}
+                    fill="none"
+                    stroke={getWeightColor(fromVal)}
+                    strokeWidth={getWeightWidth(fromVal, maxAbs)}
+                    opacity={0.9}
+                  />
+                </g>
               );
             })
           );
@@ -116,11 +124,11 @@ export default function FeedForwardViz() {
                 />
                 <text
                   x={x}
-                  y={y + 2}
+                  y={y + 1}
                   textAnchor="middle"
                   alignmentBaseline="middle"
-                  fontWeight={"bold"}
-                  fontSize={15}
+                  fontWeight={"normal"}
+                  fontSize={13}
                   fill="#222"
                   style={{ userSelect: "none" }}
                 >

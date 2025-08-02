@@ -49,22 +49,28 @@ const TokenEmbeddingsPanel: React.FC<Props> = ({ hoveredToken, onHover }) => {
   return (
     <div style={{ fontFamily: "monospace", fontSize: 22 }}>
       <div style={{ marginBottom: "1em" }}>
-        {data.tokens.map((token, i) => (
-          <span
-            key={i}
-            style={{
-              marginRight: 12,
-              cursor: "pointer",
-              fontWeight: idx === i ? "bold" : "normal",
-              fontSize: 22,
-            }}
-            onMouseEnter={() => (onHover ? onHover(token) : setInternalIdx(i))}
-            onMouseLeave={() => (onHover ? onHover(null) : setInternalIdx(null))}
-            onClick={() => (onHover ? onHover(token) : setInternalIdx(i))}
-          >
-            {token}
-          </span>
-        ))}
+        {data.tokens
+          .filter(token => token !== "[CLS]" && token !== "[SEP]")
+          .map((token, i) => {
+            // Find the original index in the full tokens array
+            const originalIndex = data.tokens.indexOf(token);
+            return (
+              <span
+                key={i}
+                style={{
+                  marginRight: 12,
+                  cursor: "pointer",
+                  fontWeight: idx === originalIndex ? "bold" : "normal",
+                  fontSize: 22,
+                }}
+                onMouseEnter={() => (onHover ? onHover(token) : setInternalIdx(originalIndex))}
+                onMouseLeave={() => (onHover ? onHover(null) : setInternalIdx(null))}
+                onClick={() => (onHover ? onHover(token) : setInternalIdx(originalIndex))}
+              >
+                {token}
+              </span>
+            );
+          })}
       </div>
       <div
         style={{

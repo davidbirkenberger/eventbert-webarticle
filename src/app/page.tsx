@@ -534,11 +534,29 @@ export default function Page() {
             <div style={{ display: "flex", alignItems: "flex-start", marginBottom: 160 }}>
               <RotatedSectionTitle label="Klassifizierung" />
               <div style={{ flex: 1 }}>
-                <p>Am Ende betrachten wir nur noch den CLS-Vektor aus dem letzten Layer. Dieser enthält alle Informationen, die das Modell aus dem Satz extrahiert hat.
+                <p style={{ marginBottom: 32}}>Am Ende betrachten wir nur noch den CLS-Vektor aus dem letzten Layer. Dieser enthält alle Informationen, die das Modell aus dem Satz extrahiert hat.
                   Doch wie gelangt das Modell nun von einem Vektor mit z. B. 768 Dimensionen zu einer Entscheidung über 10 mögliche Labels wie „Catering“, „Location“ oder „Veranstaltungstechnik“?
                   Die Antwort: Eine einfache lineare Projektion. Für jedes Label existiert ein eigener Gewichtungsvektor, der überprüft, ob der CLS-Vektor „in die richtige Richtung zeigt“. In der nächsten Ansicht zeigen wir, welche semantischen Richtungen das Modell gelernt hat – und wie der CLS-Vektor eines Textes mit diesen Richtungen in Beziehung steht.
                   </p>
-                <ClsToOutputViz />
+                <div style={{
+                  border: "1px solid #ddd",
+                  borderRadius: 8,
+                  background: "#fff",
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.03)",
+                  padding: 24,
+                  position: "relative"
+                }}>
+                  <div style={{
+                    fontSize: 12,
+                    color: "#999",
+                    position: "absolute",
+                    top: -8,
+                    left: 12,
+                    background: "#fff",
+                    padding: "0 8px"
+                  }}>Classification Layer</div>
+                  <ClsToOutputViz />
+                </div>
               </div>
             </div>
           </section>

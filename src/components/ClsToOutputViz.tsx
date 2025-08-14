@@ -223,7 +223,7 @@ export default function ClsToOutputViz() {
               y={clsYStart + i * clsYStep + neuronRadius + 1}
               textAnchor="middle"
               alignmentBaseline="middle"
-              fontWeight={i === 0 ? "bold" : "normal"}
+              fontWeight="normal"
               fontSize={13}
               fill="#222"
               style={{ userSelect: "none" }}
@@ -252,7 +252,7 @@ export default function ClsToOutputViz() {
             y={outYStart + i * outYStep + neuronRadius + 1}
             textAnchor="middle"
             alignmentBaseline="middle"
-            fontWeight="bold"
+            fontWeight="normal"
             fontSize={13}
             fill="#222"
             style={{ userSelect: "none" }}
@@ -262,10 +262,10 @@ export default function ClsToOutputViz() {
         ))}
       </svg>
       {/* CLS Token labels */}
-      <div style={{ position: "absolute", left: 0, top: clsYStart - 40, width: clsX + neuronRadius * 2, zIndex: 1 }}>
-        <div style={{ fontSize: 12, marginBottom: 4 }}>{CLS_LABEL}</div>
+      <div style={{ position: "absolute", left: 42, top: clsYStart - 40, width: clsX + neuronRadius * 2, zIndex: 1 }}>
+        <div style={{ fontSize: 16, marginBottom: 4, fontWeight: "bold" }}>{CLS_LABEL}</div>
       </div>
-      {/* Output classes, jetzt als horizontale Kette mit Logit → Sigmoid → Threshold → Label */}
+      {/* Output classes - simplified with direct final values */}
       <div style={{ position: "absolute", left: outX + neuronRadius * 2 + 24, top: 0, zIndex: 1, height, width: 320, display: "flex", flexDirection: "column", justifyContent: "flex-start" }}>
         {logits.slice(0, numOutputs).map((logit, i) => {
           const sig = sigmoid(logit);
@@ -287,40 +287,8 @@ export default function ClsToOutputViz() {
                 width: 300,
               }}
             >
-              {/* φ(z) */}
-              <span style={{ margin: 0, fontFamily: "serif", fontSize: 18, minWidth: 38, textAlign: "right", display: "inline-block" }}>&#966;(z)</span>
-              {/* Sigmoid-Kreis */}
-              <span style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: 38,
-                height: 38,
-                borderRadius: "50%",
-                border: "3px solid #bbb",
-                fontWeight: 600,
-                fontSize: 15,
-                background: "#fff",
-                margin: "0 8px 0 8px",
-                color: "#222",
-                transition: "color 0.2s",
-                boxSizing: "border-box",
-                lineHeight: 1,
-                padding: 0,
-              }}>{sig.toFixed(2)}</span>
-              {/* Threshold */}
-              <span style={{
-                margin: 0,
-                fontSize: 15,
-                fontFamily: "monospace",
-                minWidth: 70,
-                whiteSpace: "nowrap",
-                display: "inline-block",
-                textAlign: "left"
-              }}>&gt;= {threshold.toFixed(2)}</span>
               {/* Label */}
               <span style={{
-                marginLeft: 18,
                 fontWeight: 600,
                 color: active ? "#222" : "#aaa",
                 opacity: active ? 1 : 0.35,

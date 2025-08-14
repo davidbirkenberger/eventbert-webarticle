@@ -52,7 +52,8 @@ export default function SpecializedHeadViz({ headTitle, description, examples }:
                   style={{ 
                     position: "absolute", 
                     top: 0, 
-                    left: 0, 
+                    left: "33.33%", // Position in middle column
+                    width: "33.33%", // Only cover middle column
                     pointerEvents: "none",
                     zIndex: 1
                   }}
@@ -66,13 +67,18 @@ export default function SpecializedHeadViz({ headTitle, description, examples }:
                       );
                       
                       if (weight > 0.01) {
-                        // Try a much simpler approach - just use index directly
-                        const leftColumnX = 60; // Left column center
-                        const rightColumnX = 140; // Right column center
+                        // Use three-column layout positioning (SVG now only covers middle column)
+                        const leftColumnX = 0; // Left edge of middle column
+                        const rightColumnX = 170; // Right edge of middle column
                         
-                        // Just use index * 16 for spacing (simpler)
-                        const y1 = 40 + fromIndex * 16;
-                        const y2 = 40 + toIndex * 16;
+                        // Use correct spacing based on actual token height
+                        const baseY = 94; // Match the user's correction
+                        const tokenHeight = 22; // fontSize: 12 (~16px) + padding: 4px + margin: 2px
+                        const spacing = 24; // Use actual spacing between tokens (tokenHeight - marginBottom)
+                        
+                        // Calculate Y position at the center of each token
+                        const y1 = baseY + fromIndex * spacing + spacing / 2;
+                        const y2 = baseY + toIndex * spacing + spacing / 2;
                         
                         return (
                           <line
@@ -83,7 +89,7 @@ export default function SpecializedHeadViz({ headTitle, description, examples }:
                             y2={y2}
                             stroke={isHighlighted ? "#d32f2f" : "#1976d2"}
                             strokeWidth={isHighlighted ? 2 : 1}
-                            opacity={isHighlighted ? 0.8 : weight * 0.3}
+                            opacity={isHighlighted ? 0.8 : weight * 0.7}
                           />
                         );
                       }
@@ -94,7 +100,7 @@ export default function SpecializedHeadViz({ headTitle, description, examples }:
                 
                 <div style={{ display: "flex", gap: 16, position: "relative", zIndex: 2 }}>
                   {/* Left tokens */}
-                  <div style={{ flex: 1 }}>
+                  <div style={{ flex: 1, textAlign: "right" }}>
                     <div style={{ fontSize: 12, color: "#999", marginBottom: 8 }}>Input</div>
                     {example.tokens.map((token, i) => (
                       <div key={i} style={{ 
@@ -107,6 +113,11 @@ export default function SpecializedHeadViz({ headTitle, description, examples }:
                         {token}
                       </div>
                     ))}
+                  </div>
+                  
+                  {/* Middle column for lines */}
+                  <div style={{ flex: 1, position: "relative" }}>
+                    {/* This column is just for the SVG lines */}
                   </div>
                   
                   {/* Right tokens */}
@@ -128,6 +139,18 @@ export default function SpecializedHeadViz({ headTitle, description, examples }:
               </div>
             </div>
           ))}
+        </div>
+        
+        {/* Source citation */}
+        <div style={{ 
+          marginTop: 16, 
+          fontSize: 12, 
+          color: "#666", 
+          fontStyle: "italic",
+          borderTop: "1px solid #eee",
+          paddingTop: 12
+        }}>
+          Quelle: Kevin Clark, Urvashi Khandelwal, Omer Levy, and Christopher D. Manning. 2019. What Does BERT Look at? An Analysis of BERT's Attention. In <em>Proceedings of the 2019 ACL Workshop BlackboxNLP: Analyzing and Interpreting Neural Networks for NLP</em>, pages 276–286, Florence, Italy. Association for Computational Linguistics. <a href="https://aclanthology.org/W19-4828/" target="_blank" rel="noopener noreferrer" style={{ color: "#1976d2", textDecoration: "none" }}>https://aclanthology.org/W19-4828/</a>
         </div>
       </div>
     </div>

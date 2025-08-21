@@ -1,0 +1,1022 @@
+{
+  "wir": [
+    {
+      "token_id": 260,
+      "token": "ich",
+      "similarity": 0.823
+    },
+    {
+      "token_id": 704,
+      "token": "uns",
+      "similarity": 0.791
+    },
+    {
+      "token_id": 657,
+      "token": "mich",
+      "similarity": 0.603
+    },
+    {
+      "token_id": 722,
+      "token": "mir",
+      "similarity": 0.6
+    },
+    {
+      "token_id": 1682,
+      "token": "unsere",
+      "similarity": 0.434
+    },
+    {
+      "token_id": 723,
+      "token": "unser",
+      "similarity": 0.433
+    },
+    {
+      "token_id": 3572,
+      "token": "unseren",
+      "similarity": 0.431
+    },
+    {
+      "token_id": 2595,
+      "token": "unserer",
+      "similarity": 0.429
+    },
+    {
+      "token_id": 4905,
+      "token": "unserem",
+      "similarity": 0.429
+    },
+    {
+      "token_id": 8095,
+      "token": "unseres",
+      "similarity": 0.423
+    },
+    {
+      "token_id": 4360,
+      "token": "meinem",
+      "similarity": 0.417
+    },
+    {
+      "token_id": 3511,
+      "token": "meiner",
+      "similarity": 0.415
+    },
+    {
+      "token_id": 8535,
+      "token": "meines",
+      "similarity": 0.411
+    },
+    {
+      "token_id": 1388,
+      "token": "meine",
+      "similarity": 0.406
+    },
+    {
+      "token_id": 687,
+      "token": "mein",
+      "similarity": 0.404
+    },
+    {
+      "token_id": 3291,
+      "token": "meinen",
+      "similarity": 0.396
+    },
+    {
+      "token_id": 12161,
+      "token": "our",
+      "similarity": 0.331
+    },
+    {
+      "token_id": 550,
+      "token": "ihn",
+      "similarity": 0.277
+    },
+    {
+      "token_id": 988,
+      "token": "ihm",
+      "similarity": 0.268
+    },
+    {
+      "token_id": 989,
+      "token": "ihnen",
+      "similarity": 0.254
+    }
+  ],
+  "bieten": [
+    {
+      "token_id": 2443,
+      "token": "bietet",
+      "similarity": 0.953
+    },
+    {
+      "token_id": 26630,
+      "token": "biete",
+      "similarity": 0.901
+    },
+    {
+      "token_id": 3147,
+      "token": "bot",
+      "similarity": 0.763
+    },
+    {
+      "token_id": 17471,
+      "token": "boten",
+      "similarity": 0.584
+    },
+    {
+      "token_id": 27262,
+      "token": "bote",
+      "similarity": 0.523
+    },
+    {
+      "token_id": 11760,
+      "token": "geboten",
+      "similarity": 0.501
+    },
+    {
+      "token_id": 25208,
+      "token": "gebot",
+      "similarity": 0.461
+    },
+    {
+      "token_id": 23881,
+      "token": "kurier",
+      "similarity": 0.451
+    },
+    {
+      "token_id": 18796,
+      "token": "anzubieten",
+      "similarity": 0.428
+    },
+    {
+      "token_id": 10678,
+      "token": "anbieten",
+      "similarity": 0.425
+    },
+    {
+      "token_id": 22859,
+      "token": "anbietet",
+      "similarity": 0.424
+    },
+    {
+      "token_id": 21811,
+      "token": "angebotenen",
+      "similarity": 0.387
+    },
+    {
+      "token_id": 4800,
+      "token": "angeboten",
+      "similarity": 0.366
+    },
+    {
+      "token_id": 19190,
+      "token": "offer",
+      "similarity": 0.346
+    },
+    {
+      "token_id": 4140,
+      "token": "angebot",
+      "similarity": 0.316
+    },
+    {
+      "token_id": 8811,
+      "token": "angebote",
+      "similarity": 0.315
+    },
+    {
+      "token_id": 23134,
+      "token": "angebots",
+      "similarity": 0.312
+    },
+    {
+      "token_id": 29412,
+      "token": "lieferten",
+      "similarity": 0.246
+    },
+    {
+      "token_id": 16531,
+      "token": "lieferte",
+      "similarity": 0.246
+    },
+    {
+      "token_id": 11569,
+      "token": "liefert",
+      "similarity": 0.246
+    }
+  ],
+  "elegante": [
+    {
+      "token_id": 27882,
+      "token": "eleganten",
+      "similarity": 0.953
+    },
+    {
+      "token_id": 28337,
+      "token": "elegant",
+      "similarity": 0.897
+    },
+    {
+      "token_id": 21019,
+      "token": "pracht",
+      "similarity": 0.454
+    },
+    {
+      "token_id": 17434,
+      "token": "glanz",
+      "similarity": 0.388
+    },
+    {
+      "token_id": 17067,
+      "token": "glatt",
+      "similarity": 0.33
+    },
+    {
+      "token_id": 21737,
+      "token": "ruhm",
+      "similarity": 0.328
+    },
+    {
+      "token_id": 27082,
+      "token": "mies",
+      "similarity": 0.322
+    },
+    {
+      "token_id": 29715,
+      "token": "netter",
+      "similarity": 0.3
+    },
+    {
+      "token_id": 22567,
+      "token": "nette",
+      "similarity": 0.299
+    },
+    {
+      "token_id": 6520,
+      "token": "nett",
+      "similarity": 0.295
+    },
+    {
+      "token_id": 19743,
+      "token": "brill",
+      "similarity": 0.29
+    },
+    {
+      "token_id": 26209,
+      "token": "toller",
+      "similarity": 0.287
+    },
+    {
+      "token_id": 20007,
+      "token": "tollen",
+      "similarity": 0.285
+    },
+    {
+      "token_id": 23456,
+      "token": "tolles",
+      "similarity": 0.281
+    },
+    {
+      "token_id": 11524,
+      "token": "tolle",
+      "similarity": 0.276
+    },
+    {
+      "token_id": 1244,
+      "token": "handel",
+      "similarity": 0.261
+    },
+    {
+      "token_id": 3787,
+      "token": "handels",
+      "similarity": 0.261
+    },
+    {
+      "token_id": 30542,
+      "token": "straff",
+      "similarity": 0.253
+    },
+    {
+      "token_id": 10169,
+      "token": "hub",
+      "similarity": 0.253
+    },
+    {
+      "token_id": 12832,
+      "token": "locker",
+      "similarity": 0.252
+    }
+  ],
+  "cater": [
+    {
+      "token_id": 26799,
+      "token": "kellner",
+      "similarity": 0.84
+    },
+    {
+      "token_id": 19929,
+      "token": "rezeption",
+      "similarity": 0.661
+    },
+    {
+      "token_id": 30656,
+      "token": "zimmerservice",
+      "similarity": 0.639
+    },
+    {
+      "token_id": 13149,
+      "token": "nichtraucher",
+      "similarity": 0.422
+    },
+    {
+      "token_id": 16068,
+      "token": "buff",
+      "similarity": 0.419
+    },
+    {
+      "token_id": 27326,
+      "token": "minibar",
+      "similarity": 0.418
+    },
+    {
+      "token_id": 19243,
+      "token": "herd",
+      "similarity": 0.382
+    },
+    {
+      "token_id": 12779,
+      "token": "grill",
+      "similarity": 0.371
+    },
+    {
+      "token_id": 7364,
+      "token": "fon",
+      "similarity": 0.369
+    },
+    {
+      "token_id": 10089,
+      "token": "rauch",
+      "similarity": 0.36
+    },
+    {
+      "token_id": 16865,
+      "token": "rauchen",
+      "similarity": 0.357
+    },
+    {
+      "token_id": 30328,
+      "token": "lunch",
+      "similarity": 0.357
+    },
+    {
+      "token_id": 29523,
+      "token": "champagner",
+      "similarity": 0.355
+    },
+    {
+      "token_id": 28223,
+      "token": "haartrockner",
+      "similarity": 0.352
+    },
+    {
+      "token_id": 23371,
+      "token": "backofen",
+      "similarity": 0.333
+    },
+    {
+      "token_id": 29883,
+      "token": "dinner",
+      "similarity": 0.332
+    },
+    {
+      "token_id": 28216,
+      "token": "mikrowelle",
+      "similarity": 0.328
+    },
+    {
+      "token_id": 11942,
+      "token": "tabak",
+      "similarity": 0.317
+    },
+    {
+      "token_id": 27364,
+      "token": "kaffeemaschine",
+      "similarity": 0.316
+    },
+    {
+      "token_id": 14165,
+      "token": "zigar",
+      "similarity": 0.316
+    }
+  ],
+  "und": [
+    {
+      "token_id": 281,
+      "token": "wie",
+      "similarity": 0.879
+    },
+    {
+      "token_id": 250,
+      "token": "als",
+      "similarity": 0.728
+    },
+    {
+      "token_id": 360,
+      "token": "oder",
+      "similarity": 0.544
+    },
+    {
+      "token_id": 923,
+      "token": "and",
+      "similarity": 0.515
+    },
+    {
+      "token_id": 9586,
+      "token": "fur",
+      "similarity": 0.454
+    },
+    {
+      "token_id": 681,
+      "token": "sowie",
+      "similarity": 0.453
+    },
+    {
+      "token_id": 183,
+      "token": "mit",
+      "similarity": 0.448
+    },
+    {
+      "token_id": 185,
+      "token": "von",
+      "similarity": 0.44
+    },
+    {
+      "token_id": 193,
+      "token": "auf",
+      "similarity": 0.429
+    },
+    {
+      "token_id": 336,
+      "token": "bis",
+      "similarity": 0.428
+    },
+    {
+      "token_id": 216,
+      "token": "aus",
+      "similarity": 0.424
+    },
+    {
+      "token_id": 24026,
+      "token": "uber",
+      "similarity": 0.409
+    },
+    {
+      "token_id": 127,
+      "token": "der",
+      "similarity": 0.4
+    },
+    {
+      "token_id": 329,
+      "token": "durch",
+      "similarity": 0.4
+    },
+    {
+      "token_id": 523,
+      "token": "for",
+      "similarity": 0.393
+    },
+    {
+      "token_id": 253,
+      "token": "nach",
+      "similarity": 0.384
+    },
+    {
+      "token_id": 125,
+      "token": "die",
+      "similarity": 0.375
+    },
+    {
+      "token_id": 249,
+      "token": "vor",
+      "similarity": 0.366
+    },
+    {
+      "token_id": 283,
+      "token": "unter",
+      "similarity": 0.357
+    },
+    {
+      "token_id": 173,
+      "token": "das",
+      "similarity": 0.352
+    }
+  ],
+  "exklusive": [
+    {
+      "token_id": 19811,
+      "token": "exklusiv",
+      "similarity": 0.979
+    },
+    {
+      "token_id": 21830,
+      "token": "exo",
+      "similarity": 0.431
+    },
+    {
+      "token_id": 29833,
+      "token": "seri",
+      "similarity": 0.429
+    },
+    {
+      "token_id": 24165,
+      "token": "luxuri",
+      "similarity": 0.406
+    },
+    {
+      "token_id": 22640,
+      "token": "symbole",
+      "similarity": 0.401
+    },
+    {
+      "token_id": 6575,
+      "token": "symbol",
+      "similarity": 0.4
+    },
+    {
+      "token_id": 29397,
+      "token": "komfortable",
+      "similarity": 0.382
+    },
+    {
+      "token_id": 13950,
+      "token": "bequem",
+      "similarity": 0.377
+    },
+    {
+      "token_id": 27840,
+      "token": "komfortabel",
+      "similarity": 0.374
+    },
+    {
+      "token_id": 30736,
+      "token": "behaglich",
+      "similarity": 0.363
+    },
+    {
+      "token_id": 6441,
+      "token": "luxus",
+      "similarity": 0.347
+    },
+    {
+      "token_id": 23882,
+      "token": "flexible",
+      "similarity": 0.335
+    },
+    {
+      "token_id": 21347,
+      "token": "flexibel",
+      "similarity": 0.334
+    },
+    {
+      "token_id": 8158,
+      "token": "komfort",
+      "similarity": 0.321
+    },
+    {
+      "token_id": 10480,
+      "token": "flexib",
+      "similarity": 0.31
+    },
+    {
+      "token_id": 8512,
+      "token": "liebl",
+      "similarity": 0.306
+    },
+    {
+      "token_id": 4871,
+      "token": "schlaf",
+      "similarity": 0.301
+    },
+    {
+      "token_id": 9584,
+      "token": "schlafen",
+      "similarity": 0.3
+    },
+    {
+      "token_id": 24013,
+      "token": "geschlafen",
+      "similarity": 0.3
+    },
+    {
+      "token_id": 3642,
+      "token": "wunder",
+      "similarity": 0.298
+    }
+  ],
+  "location": [
+    {
+      "token_id": 23648,
+      "token": "accommodation",
+      "similarity": 0.629
+    },
+    {
+      "token_id": 25589,
+      "token": "facil",
+      "similarity": 0.605
+    },
+    {
+      "token_id": 25684,
+      "token": "living",
+      "similarity": 0.535
+    },
+    {
+      "token_id": 17149,
+      "token": "author",
+      "similarity": 0.465
+    },
+    {
+      "token_id": 26964,
+      "token": "situ",
+      "similarity": 0.458
+    },
+    {
+      "token_id": 23156,
+      "token": "encounter",
+      "similarity": 0.44
+    },
+    {
+      "token_id": 28868,
+      "token": "located",
+      "similarity": 0.438
+    },
+    {
+      "token_id": 26883,
+      "token": "looking",
+      "similarity": 0.42
+    },
+    {
+      "token_id": 28527,
+      "token": "available",
+      "similarity": 0.406
+    },
+    {
+      "token_id": 30790,
+      "token": "lieferbar",
+      "similarity": 0.389
+    },
+    {
+      "token_id": 13749,
+      "token": "look",
+      "similarity": 0.388
+    },
+    {
+      "token_id": 20882,
+      "token": "wish",
+      "similarity": 0.384
+    },
+    {
+      "token_id": 29062,
+      "token": "ausverkauft",
+      "similarity": 0.381
+    },
+    {
+      "token_id": 21192,
+      "token": "unknown",
+      "similarity": 0.376
+    },
+    {
+      "token_id": 30322,
+      "token": "active",
+      "similarity": 0.348
+    },
+    {
+      "token_id": 18968,
+      "token": "host",
+      "similarity": 0.334
+    },
+    {
+      "token_id": 24433,
+      "token": "bestell",
+      "similarity": 0.317
+    },
+    {
+      "token_id": 23754,
+      "token": "dead",
+      "similarity": 0.316
+    },
+    {
+      "token_id": 14023,
+      "token": "bestellen",
+      "similarity": 0.316
+    },
+    {
+      "token_id": 12736,
+      "token": "bestellt",
+      "similarity": 0.316
+    }
+  ],
+  "fur": [
+    {
+      "token_id": 329,
+      "token": "durch",
+      "similarity": 0.724
+    },
+    {
+      "token_id": 24026,
+      "token": "uber",
+      "similarity": 0.689
+    },
+    {
+      "token_id": 193,
+      "token": "auf",
+      "similarity": 0.628
+    },
+    {
+      "token_id": 183,
+      "token": "mit",
+      "similarity": 0.586
+    },
+    {
+      "token_id": 523,
+      "token": "for",
+      "similarity": 0.581
+    },
+    {
+      "token_id": 283,
+      "token": "unter",
+      "similarity": 0.563
+    },
+    {
+      "token_id": 216,
+      "token": "aus",
+      "similarity": 0.551
+    },
+    {
+      "token_id": 253,
+      "token": "nach",
+      "similarity": 0.539
+    },
+    {
+      "token_id": 249,
+      "token": "vor",
+      "similarity": 0.532
+    },
+    {
+      "token_id": 185,
+      "token": "von",
+      "similarity": 0.496
+    },
+    {
+      "token_id": 250,
+      "token": "als",
+      "similarity": 0.461
+    },
+    {
+      "token_id": 143,
+      "token": "und",
+      "similarity": 0.454
+    },
+    {
+      "token_id": 281,
+      "token": "wie",
+      "similarity": 0.451
+    },
+    {
+      "token_id": 336,
+      "token": "bis",
+      "similarity": 0.432
+    },
+    {
+      "token_id": 466,
+      "token": "gegen",
+      "similarity": 0.424
+    },
+    {
+      "token_id": 244,
+      "token": "bei",
+      "similarity": 0.404
+    },
+    {
+      "token_id": 1083,
+      "token": "ohne",
+      "similarity": 0.402
+    },
+    {
+      "token_id": 360,
+      "token": "oder",
+      "similarity": 0.377
+    },
+    {
+      "token_id": 800,
+      "token": "beim",
+      "similarity": 0.347
+    },
+    {
+      "token_id": 472,
+      "token": "vom",
+      "similarity": 0.341
+    }
+  ],
+  "unvergess": [
+    {
+      "token_id": 13444,
+      "token": "legend",
+      "similarity": 0.716
+    },
+    {
+      "token_id": 25041,
+      "token": "wiederkehr",
+      "similarity": 0.66
+    },
+    {
+      "token_id": 14456,
+      "token": "spektakul",
+      "similarity": 0.642
+    },
+    {
+      "token_id": 28984,
+      "token": "atemberauben",
+      "similarity": 0.543
+    },
+    {
+      "token_id": 27521,
+      "token": "impos",
+      "similarity": 0.526
+    },
+    {
+      "token_id": 11977,
+      "token": "sehens",
+      "similarity": 0.519
+    },
+    {
+      "token_id": 30739,
+      "token": "bezauber",
+      "similarity": 0.428
+    },
+    {
+      "token_id": 21505,
+      "token": "charme",
+      "similarity": 0.393
+    },
+    {
+      "token_id": 22183,
+      "token": "aggressiv",
+      "similarity": 0.351
+    },
+    {
+      "token_id": 18950,
+      "token": "invas",
+      "similarity": 0.351
+    },
+    {
+      "token_id": 11411,
+      "token": "aggress",
+      "similarity": 0.344
+    },
+    {
+      "token_id": 26815,
+      "token": "origine",
+      "similarity": 0.328
+    },
+    {
+      "token_id": 29445,
+      "token": "highlights",
+      "similarity": 0.313
+    },
+    {
+      "token_id": 24048,
+      "token": "highlight",
+      "similarity": 0.313
+    },
+    {
+      "token_id": 29414,
+      "token": "wahrzeichen",
+      "similarity": 0.301
+    },
+    {
+      "token_id": 13090,
+      "token": "origin",
+      "similarity": 0.3
+    },
+    {
+      "token_id": 10593,
+      "token": "amaz",
+      "similarity": 0.296
+    },
+    {
+      "token_id": 26562,
+      "token": "attraktionen",
+      "similarity": 0.283
+    },
+    {
+      "token_id": 24090,
+      "token": "recherche",
+      "similarity": 0.283
+    },
+    {
+      "token_id": 27093,
+      "token": "wonder",
+      "similarity": 0.282
+    }
+  ],
+  "veranstaltungen": [
+    {
+      "token_id": 5857,
+      "token": "veranstaltung",
+      "similarity": 0.942
+    },
+    {
+      "token_id": 12018,
+      "token": "veranstaltungs",
+      "similarity": 0.927
+    },
+    {
+      "token_id": 15039,
+      "token": "events",
+      "similarity": 0.847
+    },
+    {
+      "token_id": 6918,
+      "token": "event",
+      "similarity": 0.827
+    },
+    {
+      "token_id": 27131,
+      "token": "veranstalten",
+      "similarity": 0.367
+    },
+    {
+      "token_id": 12516,
+      "token": "veranstaltet",
+      "similarity": 0.364
+    },
+    {
+      "token_id": 28332,
+      "token": "veranstaltete",
+      "similarity": 0.364
+    },
+    {
+      "token_id": 7316,
+      "token": "party",
+      "similarity": 0.341
+    },
+    {
+      "token_id": 22935,
+      "token": "shows",
+      "similarity": 0.335
+    },
+    {
+      "token_id": 5463,
+      "token": "show",
+      "similarity": 0.331
+    },
+    {
+      "token_id": 12221,
+      "token": "veranstalter",
+      "similarity": 0.315
+    },
+    {
+      "token_id": 4879,
+      "token": "feier",
+      "similarity": 0.309
+    },
+    {
+      "token_id": 21378,
+      "token": "organisatoren",
+      "similarity": 0.307
+    },
+    {
+      "token_id": 9177,
+      "token": "gastgeber",
+      "similarity": 0.304
+    },
+    {
+      "token_id": 13218,
+      "token": "performance",
+      "similarity": 0.301
+    },
+    {
+      "token_id": 11121,
+      "token": "perform",
+      "similarity": 0.298
+    },
+    {
+      "token_id": 2305,
+      "token": "gast",
+      "similarity": 0.29
+    },
+    {
+      "token_id": 13724,
+      "token": "organisator",
+      "similarity": 0.281
+    },
+    {
+      "token_id": 7432,
+      "token": "feiern",
+      "similarity": 0.281
+    },
+    {
+      "token_id": 7062,
+      "token": "auftritt",
+      "similarity": 0.276
+    }
+  ]
+}

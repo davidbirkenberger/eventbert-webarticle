@@ -1,76 +1,81 @@
-import React, { useEffect, useState } from "react";
-
-// Type definitions for the embeddings data
-interface TokenEmbeddingsData {
-  tokens: string[];
-  token_ids: number[];
-  embeddings: number[][];
-}
-
-const EMBEDDINGS_URL = "/token_embeddings_raw.json";
+import React, { useState } from "react";
+import { useModelData } from "../hooks/useModelData";
 
 interface Props {
-  hoveredToken?: string | null;
-  onHover?: (token: string | null) => void;
+  selectedToken?: string | null;
+  onTokenSelect?: (token: string | null) => void;
 }
 
-const TokenEmbeddingsPanel: React.FC<Props> = ({ hoveredToken, onHover }) => {
-  const [data, setData] = useState<TokenEmbeddingsData | null>(null);
+const TokenEmbeddingsPanel: React.FC<Props> = ({ selectedToken, onTokenSelect }) => {
+  const { data, loading, error } = useModelData();
   const [internalIdx, setInternalIdx] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
-  // Find the index of the hovered token in the tokens array
-  let idx: number | null = null;
-  if (hoveredToken && data) {
-    idx = data.tokens.indexOf(hoveredToken);
-    if (idx === -1) idx = null;
-  } else if (!hoveredToken) {
-    idx = internalIdx;
-  }
+  // Pre-select the first available token when data loads
+  React.useEffect(() => {
+    if (data && !selectedToken && internalIdx === null) {
+      const firstTokenIndex = data.tokens.findIndex(token => token !== "[CLS]" && token !== "[SEP]");
+      if (firstTokenIndex !== -1) {
+        setInternalIdx(firstTokenIndex);
+      }
+    }
+  }, [data, selectedToken]); // Removed internalIdx from dependencies
 
-  useEffect(() => {
-    fetch(EMBEDDINGS_URL)
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to load embeddings data");
-        return res.json();
-      })
-      .then(setData)
-      .catch((err) => setError(err.message));
-  }, []);
-
-  if (error) {
-    return <div style={{ color: "red" }}>Error: {error}</div>;
-  }
-
-  if (!data) {
+  if (loading) {
     return <div>Loading token embeddings…</div>;
   }
 
+  if (error || !data) {
+    return <div style={{ color: "red" }}>Error: {error || "Failed to load data"}</div>;
+  }
+
+  // Find the index of the selected token in the tokens array
+  let idx: number | null = null;
+  if (selectedToken) {
+    idx = data.tokens.indexOf(selectedToken);
+    if (idx === -1) idx = null;
+  } else if (!selectedToken) {
+    idx = internalIdx;
+  }
+
   return (
-    <div style={{ fontFamily: "monospace", fontSize: 22 }}>
+    <div style={{ fontFamily: "monospace", fontSize: 16 }}>
       <div style={{ marginBottom: "1em" }}>
-        {data.tokens
-          .filter(token => token !== "[CLS]" && token !== "[SEP]")
-          .map((token, i) => {
-            // Find the original index in the full tokens array
-            const originalIndex = data.tokens.indexOf(token);
-            return (
-              <span
-                key={i}
-                style={{
-                  marginRight: 12,
-                  cursor: "pointer",
-                  fontWeight: idx === originalIndex ? "bold" : "normal",
-                  fontSize: 22,
-                }}
-                onMouseEnter={() => (onHover ? onHover(token) : setInternalIdx(originalIndex))}
-                onMouseLeave={() => (onHover ? onHover(null) : setInternalIdx(null))}
-                onClick={() => (onHover ? onHover(token) : setInternalIdx(originalIndex))}
-              >
-                {token}
-              </span>
-            );
-          })}
+        <div style={{ 
+          display: "flex", 
+          flexWrap: "wrap", 
+          gap: "8px",
+          maxWidth: "100%"
+        }}>
+          {data.tokens
+            .filter(token => token !== "[CLS]" && token !== "[SEP]")
+            .map((token, i) => {
+              // Find the original index in the full tokens array
+              const originalIndex = data.tokens.indexOf(token);
+              return (
+                <span
+                  key={i}
+                  style={{
+                    cursor: "pointer",
+                    fontWeight: idx === originalIndex ? "bold" : "normal",
+                    fontSize: 18,
+                    padding: "2px 4px",
+                    borderRadius: "3px",
+                    backgroundColor: idx === originalIndex ? "#e0e0e0" : "#f5f5f5",
+                    transition: "background-color 0.2s"
+                  }}
+                  onClick={() => {
+                    if (onTokenSelect) {
+                      onTokenSelect(token);
+                    } else {
+                      setInternalIdx(originalIndex);
+                    }
+                  }}
+                >
+                  {token}
+                </span>
+              );
+            })}
+        </div>
       </div>
       <div
         style={{
@@ -80,18 +85,23 @@ const TokenEmbeddingsPanel: React.FC<Props> = ({ hoveredToken, onHover }) => {
           borderTop: "1px solid #ddd",
           paddingTop: "0.5em",
           fontSize: 18,
+          backgroundColor: "#f8f9fa",
+          border: "1px solid #e9ecef",
+          borderRadius: "6px",
+          padding: "16px",
+          marginTop: "16px"
         }}
       >
         {idx !== null && (
           <>
-            ID: {data.token_ids[idx]}
+            Token: {data.tokens[idx]}
             {"\n"}
             Embedding: [
-            {data.embeddings[idx]
-              .slice(0, 10)
-              .map((v) => v.toFixed(2))
-              .join(", ")}
-            ...]
+            {data.token_embeddings.raw[data.tokens[idx]]
+              ?.slice(0, 7)
+              .map((v) => v.toFixed(3))
+              .join(", ") || "N/A"}
+            , ...]
           </>
         )}
       </div>

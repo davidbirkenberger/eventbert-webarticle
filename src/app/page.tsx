@@ -1,114 +1,64 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useClsConnectionsData } from "@/hooks/useClsConnectionsData";
+import { useModelData } from "@/hooks/useModelData";
+import { useVocabNeighbors } from "../hooks/useVocabNeighbors";
 import ClsToOutputViz from "../components/ClsToOutputViz";
 import SpecializedHeadViz from "../components/SpecializedHeadViz";
 import TokenEmbeddingsPanel from "../components/TokenEmbeddingsPanel";
 import AttentionMatrixViz from "../components/AttentionMatrixViz";
-import EmbeddingSpaceMap from "../components/EmbeddingSpaceMap";
+
 import TransformerBlockWrapper from "../components/TransformerBlockWrapper";
+import LabeledContainer from "../components/LabeledContainer";
+import VocabNeighborsViz from "../components/VocabNeighborsViz";
 
 // Helper component for the raw text card
 const RawTextCard: React.FC = () => {
-  const [text, setText] = useState<string>("");
-
-  useEffect(() => {
-    fetch("/token_embeddings_raw.json")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.text) setText(data.text);
-        else setText("Wir sind das Kompetenzteam für beeindruckende Veranstaltungen im historischen Getreidespeicher im Osthafen. In unseren liebevoll ausgestatteten Eventlocations treffen im Spreespeicher moderne Design-Elemente auf alten Industrie-Charme.");
-      })
-      .catch(() => setText("Wir sind das Kompetenzteam für beeindruckende Veranstaltungen im historischen Getreidespeicher im Osthafen. In unseren liebevoll ausgestatteten Eventlocations treffen im Spreespeicher moderne Design-Elemente auf alten Industrie-Charme."));
-  }, []);
+  const { data, loading } = useModelData();
+  
+  if (loading) return <div>Loading...</div>;
+  
+  const text = data?.text || "Wir bieten elegantes Catering und exklusive Locations für unvergessliche Veranstaltungen.";
 
   return (
-    <div style={{
-      border: "1px solid #eee",
-      borderRadius: 6,
-      background: "#fafafa",
-      boxShadow: "0 1px 2px rgba(0,0,0,0.03)",
-      padding: 32,
-      minWidth: 600,
-      maxWidth: 800,
-      flex: 1,
-      display: "flex",
-      flexDirection: "column",
-      minHeight: 220,
-      justifyContent: "space-between",
-    }}>
-      <div style={{ fontSize: 28, color: "#222", lineHeight: 1.6, fontWeight: "bold" }}>{text}</div>
-      <div style={{
-        borderTop: "1px solid #eee",
-        padding: "8px 0 0 0",
-        display: "flex",
-        gap: 16,
-        color: "#888",
-        fontSize: 22,
-        alignItems: "center",
-        marginTop: 16,
-      }}>
-        <span style={{ cursor: "pointer" }}>&larr;</span>
-        <span style={{ cursor: "pointer" }}>&rarr;</span>
-      </div>
+    <div className="border-none rounded-xl bg-gray-50 shadow-none p-6 min-w-[500px] max-w-[700px] flex-1 flex flex-col min-h-[120px] justify-center relative">
+      <div className="text-2xl text-gray-600 leading-relaxed font-medium font-mono">{text}</div>
     </div>
   );
 };
 
 // Helper for rotated section titles
 const RotatedSectionTitle: React.FC<{ label: string }> = ({ label }) => (
-  <div
-    style={{
-      writingMode: "vertical-rl",
-      textOrientation: "mixed",
-      fontWeight: "bold",
-      fontSize: 24,
-      color: "#555",
-      marginRight: 16,
-      display: "flex",
-      alignItems: "center",
-      letterSpacing: 1,
-      minWidth: 32,
-    }}
-  >
+  <div className="writing-vertical-rl text-orientation-mixed font-bold text-2xl text-gray-600 mr-4 flex items-center tracking-wide min-w-8">
     {label}
   </div>
 );
 
 // Tokenized sentence component with same styling as TokenEmbeddingsPanel
 const TokenizedSentence: React.FC = () => {
-  const [tokens, setTokens] = useState<string[]>([]);
-
-  useEffect(() => {
-    fetch("/token_embeddings_raw.json")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.tokens) {
-          setTokens(data.tokens);
-        }
-      })
-      .catch(() => {
-        // Fallback tokens if fetch fails
-        setTokens(["[CLS]", "mit", "unseren", "sna", "##cks", "bieten", "wir", "das", "beste", "cater", "##ing", ".", "[SEP]"]);
-      });
-  }, []);
+  const { data, loading } = useModelData();
+  
+  if (loading) return <div>Loading...</div>;
+  
+  const tokens = data?.tokens || ["[CLS]", "mit", "unseren", "sna", "##cks", "bieten", "wir", "das", "beste", "cater", "##ing", ".", "[SEP]"];
 
   return (
-    <div style={{ fontFamily: "monospace", fontSize: 22 }}>
-      <div style={{ marginBottom: "1em" }}>
-        {tokens.map((token, i) => (
+    <div className="font-mono text-xl">
+      <div className="mb-4 flex gap-2">
+        {tokens.slice(0, 10).map((token, i) => (
           <span
             key={i}
-            style={{
-              marginRight: 12,
-              fontWeight: token === "[CLS]" ? "bold" : "normal",
-              fontSize: token === "[CLS]" ? 36 : 18,
-              opacity: token === "[CLS]" ? 1 : 0.4,
-            }}
+            className={`inline-block align-bottom leading-[50px] ${
+              token === "[CLS]" 
+                ? "font-bold text-4xl opacity-100" 
+                : "font-normal text-xl opacity-40"
+            }`}
           >
             {token}
           </span>
         ))}
+        {tokens.length > 10 && (
+          <span className="text-xl opacity-40 align-bottom leading-[50px]">...</span>
+        )}
       </div>
     </div>
   );
@@ -122,35 +72,18 @@ const LayerSelector: React.FC<{
   const layerCount = 12; // Assuming 12 layers based on typical BERT architecture
   
   return (
-    <div style={{ 
-      display: "flex", 
-      alignItems: "center", 
-      justifyContent: "center", 
-      marginBottom: 16,
-      gap: 8 
-    }}>
-      <span style={{ fontSize: 16, color: "#666", marginRight: 8 }}>Layer:</span>
-      <div style={{ 
-        display: "flex", 
-        gap: 4, 
-        alignItems: "center",
-        flexWrap: "wrap"
-      }}>
+    <div className="flex items-center justify-center mb-4 gap-2">
+      <span className="text-base text-gray-600 mr-2">Layer:</span>
+      <div className="flex gap-1 items-center flex-wrap">
         {Array.from({ length: layerCount }, (_, i) => (
           <button
             key={i}
             onClick={() => onSelect(i)}
-            style={{
-              padding: "4px 8px",
-              border: "1px solid #ddd",
-              borderRadius: 4,
-              background: i === selectedIndex ? "#e3f2fd" : "#fff",
-              color: i === selectedIndex ? "#1976d2" : "#666",
-              fontWeight: i === selectedIndex ? "bold" : "normal",
-              cursor: "pointer",
-              fontSize: 12,
-              fontFamily: "monospace",
-            }}
+            className={`px-2 py-1 border border-gray-300 rounded text-xs font-mono cursor-pointer transition-colors ${
+              i === selectedIndex 
+                ? "bg-blue-50 text-blue-700 font-bold" 
+                : "bg-white text-gray-600 hover:bg-gray-50"
+            }`}
           >
             {i}
           </button>
@@ -168,35 +101,18 @@ const HeadSelector: React.FC<{
   const headCount = 12; // Assuming 12 heads based on typical BERT architecture
   
   return (
-    <div style={{ 
-      display: "flex", 
-      alignItems: "center", 
-      justifyContent: "center", 
-      marginBottom: 16,
-      gap: 8 
-    }}>
-      <span style={{ fontSize: 16, color: "#666", marginRight: 8 }}>Head:</span>
-      <div style={{ 
-        display: "flex", 
-        gap: 4, 
-        alignItems: "center",
-        flexWrap: "wrap"
-      }}>
+    <div className="flex items-center justify-center mb-4 gap-2">
+      <span className="text-base text-gray-600 mr-2">Head:</span>
+      <div className="flex gap-1 items-center flex-wrap">
         {Array.from({ length: headCount }, (_, i) => (
           <button
             key={i}
             onClick={() => onSelect(i)}
-            style={{
-              padding: "4px 8px",
-              border: "1px solid #ddd",
-              borderRadius: 4,
-              background: i === selectedIndex ? "#e3f2fd" : "#fff",
-              color: i === selectedIndex ? "#1976d2" : "#666",
-              fontWeight: i === selectedIndex ? "bold" : "normal",
-              cursor: "pointer",
-              fontSize: 12,
-              fontFamily: "monospace",
-            }}
+            className={`px-2 py-1 border border-gray-300 rounded text-xs font-mono cursor-pointer transition-colors ${
+              i === selectedIndex 
+                ? "bg-blue-50 text-blue-700 font-bold" 
+                : "bg-white text-gray-600 hover:bg-gray-50"
+            }`}
           >
             {i}
           </button>
@@ -213,49 +129,23 @@ const TokenSelector: React.FC<{
   onSelect: (index: number) => void; 
 }> = ({ tokens, selectedIndex, onSelect }) => {
   return (
-    <div style={{ 
-      display: "flex", 
-      alignItems: "center", 
-      justifyContent: "center", 
-      marginBottom: 24,
-      gap: 8 
-    }}>
+    <div className="flex items-center justify-center mb-6 gap-2">
       <button 
         onClick={() => onSelect((selectedIndex - 1 + tokens.length) % tokens.length)}
-        style={{ 
-          fontSize: 22, 
-          border: "none", 
-          background: "none", 
-          cursor: "pointer", 
-          color: "#888",
-          padding: "8px 12px",
-          borderRadius: 4
-        }}
+        className="text-2xl border-none bg-transparent cursor-pointer text-gray-600 p-2 rounded-md"
       >
         &larr;
       </button>
-      <div style={{ 
-        display: "flex", 
-        gap: 8, 
-        alignItems: "center",
-        fontFamily: "monospace",
-        fontSize: 18
-      }}>
+      <div className="flex gap-2 items-center font-mono text-lg">
         {tokens.map((token, i) => (
           <button
             key={i}
             onClick={() => onSelect(i)}
-            style={{
-              padding: "6px 12px",
-              border: "1px solid #ddd",
-              borderRadius: 4,
-              background: i === selectedIndex ? "#e3f2fd" : "#fff",
-              color: i === selectedIndex ? "#1976d2" : "#666",
-              fontWeight: i === selectedIndex ? "bold" : "normal",
-              cursor: "pointer",
-              fontSize: 14,
-              fontFamily: "monospace",
-            }}
+            className={`px-3 py-1 border border-gray-300 rounded text-sm font-mono transition-colors ${
+              i === selectedIndex 
+                ? "bg-blue-50 text-blue-700 font-bold" 
+                : "bg-white text-gray-600 hover:bg-gray-50"
+            }`}
           >
             {token}
           </button>
@@ -263,15 +153,7 @@ const TokenSelector: React.FC<{
       </div>
       <button 
         onClick={() => onSelect((selectedIndex + 1) % tokens.length)}
-        style={{ 
-          fontSize: 22, 
-          border: "none", 
-          background: "none", 
-          cursor: "pointer", 
-          color: "#888",
-          padding: "8px 12px",
-          borderRadius: 4
-        }}
+        className="text-2xl border-none bg-transparent cursor-pointer text-gray-600 p-2 rounded-md"
       >
         &rarr;
       </button>
@@ -280,161 +162,208 @@ const TokenSelector: React.FC<{
 };
 
 export default function Page() {
-  // Fetch tokens and attention for the attention viz
+  // Use the new consolidated data hook
+  const { data: modelData, loading, error } = useModelData();
+  const { data: vocabNeighbors, loading: vocabLoading, error: vocabError, fullVocabData, neighborsByToken } = useVocabNeighbors();
+  
+
+  
+  // State for attention visualization
   const [attentionData, setAttentionData] = useState<{ tokens: string[]; attention: number[][] } | null>(null);
   const [selectedTokenIndex, setSelectedTokenIndex] = useState<number>(0);
   const [selectedLayerIndex, setSelectedLayerIndex] = useState<number>(0);
   const [selectedHeadIndex, setSelectedHeadIndex] = useState<number>(0);
   
-  useEffect(() => {
-    fetch("/token_embeddings_raw.json")
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        if (data.tokens && data.attentions) {
-          // Extract selected layer and head for visualization
-          const matrix =
-            Array.isArray(data.attentions) &&
-            Array.isArray(data.attentions[selectedLayerIndex]) &&
-            Array.isArray(data.attentions[selectedLayerIndex][selectedHeadIndex])
-              ? data.attentions[selectedLayerIndex][selectedHeadIndex]
-              : null;
-          if (matrix) {
-            setAttentionData({ tokens: data.tokens, attention: matrix });
-          }
-        }
-      })
-      .catch(() => {});
-  }, [selectedLayerIndex, selectedHeadIndex]);
-
   // State for embedding 2D map
   const [embedding2d, setEmbedding2d] = useState<any[]>([]);
-  const [hoveredToken, setHoveredToken] = useState<string | null>(null);
+  const [selectedToken, setSelectedToken] = useState<string | null>(null);
+  
+  // Debug logging
+  console.log("Page: vocabNeighbors:", vocabNeighbors);
+  console.log("Page: vocabLoading:", vocabLoading);
+  console.log("Page: vocabError:", vocabError);
+  console.log("Page: embedding2d:", embedding2d);
+  console.log("Page: modelData:", modelData);
 
-  // Fetch 2D embedding CSV
+  // Process attention data when model data changes
   useEffect(() => {
-    fetch("/bert_vocab_embedding_2d.csv")
-      .then((res) => res.text())
-      .then((csv) => {
-        const lines = csv.trim().split("\n");
-        const header = lines[0].split(",");
-        const data = lines.slice(1).map((line) => {
-          const [token, x, y] = line.split(",");
-          return { token, x: +x, y: +y };
-        })
-        .filter(d => Number.isFinite(d.x) && Number.isFinite(d.y));
-        setEmbedding2d(data);
-      });
-  }, []);
-  return (
-    <main style={{ padding: '56px 80px', boxSizing: 'border-box', maxWidth: 1600, margin: '0 auto' }}>
+    if (modelData && modelData.attention_data) {
+      const layerKey = `layer_${selectedLayerIndex}`;
+      const headKey = `head_${selectedHeadIndex}`;
+      
+      if (modelData.attention_data[layerKey] && modelData.attention_data[layerKey][headKey]) {
+        const matrix = modelData.attention_data[layerKey][headKey];
+        setAttentionData({ tokens: modelData.tokens, attention: matrix });
+      }
+    }
+  }, [modelData, selectedLayerIndex, selectedHeadIndex]);
+
+  // Process 2D embeddings when model data changes
+  useEffect(() => {
+    if (modelData && modelData.token_embeddings["2d"]) {
+      const data = Object.entries(modelData.token_embeddings["2d"]).map(([token, coords]) => ({
+        token,
+        x: coords.x,
+        y: coords.y
+      }));
+      setEmbedding2d(data);
+    }
+  }, [modelData]);
+    return (
+    <main className="px-16 py-16 box-border max-w-7xl mx-auto overflow-x-hidden">
       {/* Title and subtitle */}
-      <div style={{ marginBottom: 64 }}>
-        <h1 style={{ fontSize: 56, fontWeight: 700, margin: 0, lineHeight: 1.1 }}>Ein Blick in die Blackbox:</h1>
-        <div style={{ fontSize: 24, color: '#444', marginTop: 10, fontWeight: 400 }}>
+      <div className="mb-16">
+        <h1 className="text-5xl font-bold leading-tight mb-4">Ein Blick in die Blackbox</h1>
+        <div className="text-lg text-gray-600 mt-4 font-normal">
         Wie BERT Website-Texte der Eventbranche versteht
         </div>
-                  <div style={{ fontSize: 14, color: '#666', marginTop: 16, display: 'flex', gap: 16, alignItems: 'center' }}>
-            <span>Autor: David Birkenberger</span>
-            <span>•</span>
-            <span>Oktober 2025</span>
-            <span>•</span>
-            <a href="https://github.com/davidbirkenberger/mechinterp_article" style={{ color: '#666', textDecoration: 'none' }}>
-              GitHub
-            </a>
-          </div>
-          <div style={{ borderTop: "1px solid #eee", marginTop: 32, marginBottom: 32 }}></div>
-          
+        <div className="text-sm text-gray-600 mt-4 flex gap-4 items-center">
+          <span>Autor: David Birkenberger</span>
+          <span>•</span>
+          <span>Oktober 2025</span>
+          <span>•</span>
+          <a href="https://github.com/davidbirkenberger/mechinterp_article" className="text-gray-600 no-underline hover:underline">
+            GitHub
+          </a>
         </div>
+        <div className="border-t border-gray-200 mt-8 mb-8"></div>
+      </div>
+
       {/* Outline and content layout */}
-      <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-        {/* Outline sidebar */}
-        <nav style={{ minWidth: 240, marginRight: 56, position: 'sticky', top: 56 }}>
-          <div style={{ fontWeight: 700, fontSize: 24, marginBottom: 24, color: '#555' }}>Inhalt</div>
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: 18, color: '#444' }}>
-            <li style={{ marginBottom: 16 }}><a href="#unternehmenstext" style={{ color: '#444', textDecoration: 'none' }}>Unternehmenstext</a></li>
-            <li style={{ marginBottom: 16 }}><a href="#embeddings" style={{ color: '#444', textDecoration: 'none' }}>Embeddings</a></li>
-            <li style={{ marginBottom: 16 }}><a href="#cls-token" style={{ color: '#444', textDecoration: 'none' }}>CLS-Token</a></li>
-            <li style={{ marginBottom: 16 }}><a href="#transformer-block" style={{ color: '#444', textDecoration: 'none' }}>Transformer Block</a></li>
-            <li style={{ marginBottom: 16 }}><a href="#specialized-components" style={{ color: '#444', textDecoration: 'none' }}>Specialized Components</a></li>
-            <li style={{ marginBottom: 16 }}><a href="#klassifizierung" style={{ color: '#444', textDecoration: 'none' }}>Klassifizierung</a></li>
+      <div className="flex gap-10">
+        {/* Outline sidebar - Sticky Navigation */}
+        <nav className="sticky top-20 w-52 h-fit-content flex-shrink-0 bg-transparent p-5">
+          <div className="font-bold text-3xl mb-6 text-gray-600">Inhalt</div>
+          <ul className="list-none p-0 m-0 text-lg text-gray-600">
+            <li className="mb-4"><a href="#unternehmenstext" className="text-gray-600 no-underline hover:underline">Website-Text</a></li>
+            <li className="mb-4"><a href="#embeddings" className="text-gray-600 no-underline hover:underline">Embeddings</a></li>
+            <li className="mb-4"><a href="#vocab-neighbors" className="text-gray-600 no-underline hover:underline">Vocabulary Neighbors</a></li>
+            <li className="mb-4"><a href="#cls-token" className="text-gray-600 no-underline hover:underline">CLS-Token</a></li>
+            <li className="mb-4"><a href="#transformer-block" className="text-gray-600 no-underline hover:underline">Transformer Block</a></li>
+            <li className="mb-4"><a href="#specialized-components" className="text-gray-600 no-underline hover:underline">Specialized Components</a></li>
+            <li className="mb-4"><a href="#klassifizierung" className="text-gray-600 no-underline hover:underline">Klassifizierung</a></li>
           </ul>
         </nav>
+
         {/* Main content */}
-        <div style={{ flex: 1 }}>
-          <p style={{ marginBottom: 32}}>In diesem Artikel schauen wir tief in die Black Box eines <a href="https://github.com/davidbirkenberger/bert-event-classifier" style={{ color: '#1e64ff', textDecoration: 'none' }}>feinabgestimmten deutschen BERT-Modells</a> – und folgen einem einzelnen Satz auf seinem Weg durch das neuronale Netz. Dabei beobachten wir, wie aus rohen Token Vektoren werden, wie sich Bedeutung im sogenannten CLS-Raum formt, und wie am Ende eine Multi-Label-Klassifikation zustande kommt.</p>
-                      <section id="unternehmenstext">
-              <div style={{ display: "flex", alignItems: "flex-start", marginBottom: 160 }}>
-                <RotatedSectionTitle label="Unternehmenstext" />
-                <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
-                  <RawTextCard />
-                </div>
+        <div className="flex-1 min-w-0 max-w-full">
+          <section className="mb-12">
+            <p className="text-base text-gray-700 mb-6">
+              Wie versteht ein Sprachmodell eigentlich Texte, die wir im Alltag schreiben – zum Beispiel die Selbstdarstellung eines Unternehmens auf seiner Website? Traditionell versucht man, solche Informationen über Interviews, Umfragen oder Experteneinschätzungen zu erfassen. In unserem Projekt gehen wir einen anderen Weg: Wir setzen ein feinabgestimmtes BERT-Modell ein, das Texte der Eventbranche automatisch in Kategorien einordnet – etwa ob ein Unternehmen Catering anbietet oder Veranstaltungsräume bereitstellt.
+            </p>
+            <p className="text-base text-gray-700 mb-6">
+              Doch damit betreten wir eine Welt, die leicht als undurchdringlich erscheint. Ein Modell mit Hunderten Millionen Parametern trifft Entscheidungen, ohne dass unmittelbar klar wird, wie es zu diesen kommt. Die „Blackbox“ wirkt bedrohlich, weil sie einerseits erstaunlich gut funktioniert, andererseits aber nur schwer durchschaubar scheint.
+            </p>
+            <p className="text-base text-gray-700 mb-6">
+              In diesem Artikel lüften wir den Deckel ein Stück weit. Wir begleiten einen einzelnen Satz auf seiner Reise durch BERT: vom rohen Text über die ersten Vektorabbildungen bis hin zur finalen Klassifikation. Dabei zeigen wir, wie sich Bedeutung schrittweise im Modell aufbaut, welche spezialisierten Komponenten sich herausgebildet haben und wie am Ende eine klare Entscheidung zustande kommt. Ziel ist es, ein Gefühl dafür zu vermitteln, dass hinter der Blackbox keine Magie steckt, sondern eine Vielzahl kleiner, nachvollziehbarer Transformationen – zusammengenommen mächtig, aber im Kern erklärbar.
+            </p>
+          </section>
+                                <section id="unternehmenstext">
+            <div className="mb-12">
+              <h2 className="text-3xl font-bold text-gray-800 mb-8">
+                Website-Text als Ausgangspunkt
+              </h2>
+              <p className="text-base text-gray-700 mb-6">
+                Als Grundlage dienen Texte, die wir von frei zugänglichen Unternehmenswebsites beziehen. Dort beschreiben Firmen selbst, welche Leistungen sie anbieten – sei es Catering, die Bereitstellung von Räumen oder technische Services. Für unser Modell sind diese Texte die zentrale Informationsquelle.
+              </p>
+              
+              <p className="text-base text-gray-700 mb-8">
+                Solche Webseitentexte sind inhaltlich oft dicht, aber sprachlich frei formuliert. Sie unterscheiden sich damit von klassischen Fragebögen oder Interviewdaten: Statt vordefinierter Kategorien liegt hier unstrukturierter Text vor, den das Modell interpretieren muss.
+              </p>
+
+
+              <div className="flex justify-center">
+                <RawTextCard />
               </div>
-                        </section>
-            <div style={{ height: 160 }} />
-            <section id="embeddings">
-            <div style={{ display: "flex", alignItems: "flex-start", marginBottom: 160 }}>
-              <RotatedSectionTitle label="Embeddings" />
-              <div style={{ flex: 1 }}>
-                <p>Der erste Schritt jeder BERT-Verarbeitung: Der Satz wird in Subword-Tokens zerlegt. Jedes Token erhält ein eigenes Embedding, das seine Bedeutung in einem hochdimensionalen Raum kodiert – angereichert mit Positionsinformationen.</p>
-                <p>Im folgenden interaktiven Diagramm kannst du über die einzelnen Tokens hovern, um ihre eingebetteten Vektoren zu sehen – dargestellt im zweidimensionalen Raum der PCA-Projektion.</p>
-                <div style={{ 
-                  border: "1px solid #ddd", 
-                  borderRadius: 8, 
-                  background: "#fff",
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.03)",
-                  padding: 24,
-                  marginTop: 32
-                }}>
-                  <div style={{ fontSize: 12, color: "#999", marginBottom: 8 }}>Tokenized Satz</div>
-                  <TokenEmbeddingsPanel
-                    hoveredToken={hoveredToken}
-                    onHover={setHoveredToken}
-                  />
-                  {/* Embedding space map */}
-                  <div style={{ marginTop: 32 }}>
-                    <div style={{ fontSize: 12, color: "#999", marginBottom: 8 }}>PCA-Projektion der Token-Embeddings</div>
-                    <EmbeddingSpaceMap
-                      data={embedding2d}
-                      selectedToken={hoveredToken || undefined}
-                      onHover={setHoveredToken}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-                      </section>
-            <section id="cls-token">
-            <div style={{ display: "flex", alignItems: "flex-start", marginBottom: 160 }}>
-              <RotatedSectionTitle label="CLS-Token" />
-              <div style={{ flex: 1 }}>
-                <p>Zusätzlich zu den Tokens des Satzes wird ein spezieller Token eingefügt: [CLS]. Er steht am Anfang der Sequenz und dient als zusammenfassende Repräsentation des gesamten Textes.</p>
-                <div style={{ marginTop: 32 }}>
-                  <TokenizedSentence />
-                </div>
-                <p style={{ marginTop: 32}}>Anfangs ist der CLS-Vektor nur eine zufällige Kombination von Werten – aber im Verlauf des Modells wird er mit Kontext angereichert und am Ende für die Klassifikation verwendet.</p>
-              </div>
+              <p className="text-base text-gray-700 mb-8 mt-8">
+                Um nachvollziehbar zu machen, wie dieser Prozess funktioniert, betrachten wir im Folgenden exemplarisch einen einzelnen Satz. Er begleitet uns durch alle Stationen der Modellverarbeitung – von der Tokenisierung bis hin zur finalen Klassifikation.
+              </p>
             </div>
           </section>
+            <section id="embeddings">
+            <div className="mb-12">
+              <h2 className="text-3xl font-bold text-gray-800 mb-8">
+                Embeddings
+              </h2>
+              <p className="text-base text-gray-700 mb-6">
+                Bevor der Satz verarbeitet werden kann, zerlegt das Modell ihn in kleinere Einheiten, sogenannte Tokens. 
+                Diese Tokens müssen in Zahlen übersetzt werden, damit das neuronale Netz damit arbeiten kann.
+                Jedes Token erhält ein Embedding – einen Vektor im hochdimensionalen Raum. 
+                Darin ist eine abstrakte Vorstellung seiner Bedeutung kodiert, ergänzt um Informationen über die Position im Satz.
+              </p>
+              
+              <p className="text-base text-gray-700 mb-8">
+                Dabei liegen semantisch ähnliche Wörter im hochdimensionalen Embedding-Raum nah beieinander.
+                Um das zu veranschaulichen können wir den Raum in zwei Dimensionen projizieren und uns die Tokens unseres Beispielsatzes anschauen.
+              </p>
+              
+                              <LabeledContainer 
+                  label="Tokenized Satz"
+                >
+                <TokenEmbeddingsPanel
+                  selectedToken={selectedToken}
+                  onTokenSelect={setSelectedToken}
+                />
+                {/* Vocabulary space map */}
+                <div className="mt-8">
+                  <div className="text-sm text-gray-600 mb-2">t-SNE Visualisierung des Vokabulars</div>
+                  {vocabNeighbors ? (
+                    <VocabNeighborsViz
+                      vocabNeighbors={vocabNeighbors}
+                      fullVocabData={fullVocabData}
+                      neighborsByToken={neighborsByToken}
+                      selectedToken={selectedToken}
+                      onTokenSelect={setSelectedToken}
+                      width={900}
+                      height={520}
+                    />
+                  ) : (
+                    <div className="text-center py-10 text-gray-600">
+                      {vocabLoading || !modelData ? 'Loading vocabulary data...' : 'Vocabulary data not available'}
+                    </div>
+                  )}
+       
+                </div>
+
+              </LabeledContainer>
+              <p className="text-base text-gray-700 mb-6 mt-8">
+                  Damit zeigt sich: Noch bevor der eigentliche Modellprozess beginnt, ist ein Großteil der semantischen Struktur bereits in den Embeddings angelegt. 
+                  Das Modell „weiß“ also schon auf dieser frühen Ebene, dass Wörter wie Service, Kellner oder Zimmerservice enger zusammenhängen als völlig andere Begriffe.
+                  </p>
+
+                <p className="text-base text-gray-700">Zusätzlich zu den eigentlichen Satz-Token fügt BERT am Anfang der Sequenz ein spezielles Symbol ein: [CLS].
+
+Dieses Token hat keine eigene Bedeutung im Sprachsinn. Stattdessen dient es als Sammelpunkt: Während der Verarbeitung fließt nach und nach Information von allen anderen Tokens in den [CLS]-Vektor ein.</p>
+                <div className="mt-8">
+                  <TokenizedSentence />
+                </div>
+                <p className="text-base text-gray-700 mt-8 mb-6">
+                  Am Anfang ist dieser Vektor lediglich eine zufällige Zahlenkombination. Mit jeder Schicht des Modells reichert er sich jedoch mit Kontext an – bis er am Ende eine verdichtete Repräsentation des gesamten Satzes darstellt.
+                </p>
+                
+                <p className="text-base text-gray-700 mb-8">
+                  Für die Klassifikation betrachten wir ausschließlich diesen finalen [CLS]-Vektor. Er fasst das Gelernte über den gesamten Text in einer kompakten Form zusammen und bildet damit die Grundlage für die Entscheidung des Modells.
+                </p>
+              </div>
+          </section>
+          
           {/* Transformer Block visualization as a top-level section */}
           <section id="transformer-block">
-            <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: 160 }}>
-              <RotatedSectionTitle label="Transformer Block" />
-              <div style={{ flex: 1 }}>
-                <p>Der Text – inklusive [CLS] – wird nun durch mehrere identische Transformer-Blöcke geschickt. <br/> Jeder Block führt vier Schritte aus:</p>
+            <div className="mb-12">
+              <h2 className="text-3xl font-bold text-gray-800 mb-8">
+                Transformer Block
+              </h2>
+              <p className="text-base text-gray-700 mb-6">
+                Nun beginnt der eigentliche Kern des Modells: Die Verarbeitung durch eine Abfolge von Transformer-Blöcken.
+                Jeder Block besteht aus denselben Bausteinen – Multi-Head Attention, Feed-Forward-Netzwerk und Normalisierungsschritte. 
+              </p>
+              
+              <p className="text-base text-gray-700 mb-8">
+                Bei BERT werden insgesamt 12 solcher Blöcke durchlaufen. Jeder einzelne fügt ein weiteres Stück Verarbeitung hinzu – kleine Veränderungen, die sich im Laufe der Schichten zu einem tiefen Sprachverständnis summieren.
+              </p>
                 {attentionData ? (
                   <>
-                    <div style={{ marginTop: 32, marginBottom: 32 }}>
-                      <TokenSelector 
-                        tokens={attentionData.tokens} 
-                        selectedIndex={selectedTokenIndex} 
-                        onSelect={setSelectedTokenIndex} 
-                      />
-                    </div>
+
                     <TransformerBlockWrapper 
                       attentionTokens={attentionData.tokens} 
                       attentionMatrix={attentionData.attention}
@@ -442,28 +371,23 @@ export default function Page() {
                       selectedLayerIndex={selectedLayerIndex}
                       selectedHeadIndex={selectedHeadIndex}
                       onHeadSelect={setSelectedHeadIndex}
-                    />
-                    <div style={{ marginTop: 32, marginBottom: 16 }}>
-                      <p>Dieser Block wiederholt sich mehrfach – bei BERT-base sind es insgesamt 12 Schichten. Mit jeder weiteren Ebene verändert sich der Informationsgehalt der Token-Repräsentationen, besonders im CLS-Vektor, immer weiter.</p>
-                    </div>
-                    <LayerSelector 
-                      selectedIndex={selectedLayerIndex} 
-                      onSelect={setSelectedLayerIndex} 
+                      onTokenSelect={setSelectedTokenIndex}
+                      onLayerChange={setSelectedLayerIndex}
                     />
                   </>
                 ) : (
-                  <div>Lade Attention-Daten…</div>
+                  <div className="text-center py-8 text-gray-600">Lade Attention-Daten…</div>
                 )}
-              </div>
             </div>
           </section>
           <section id="specialized-components">
-            <div style={{ display: "flex", alignItems: "flex-start", marginBottom: 160 }}>
-              <RotatedSectionTitle label="Specialized Components" />
-              <div style={{ flex: 1 }}>
-                <p>Aber warum braucht es so viele sich ähnelnde, wiederholte Komponenten?</p>
-                <p>Sprachverstehen lässt sich als Zusammenspiel vieler Teilaufgaben denken: zum Beispiel zu erkennen, auf welches Nomen sich ein Adjektiv bezieht oder welche Entität mit einem Pronomen gemeint ist. Interessanterweise wurden in BERT bereits spezialisierte Komponenten gefunden, die genau solche Aufgaben übernehmen.</p>
-
+            <div className="mb-12">
+              <h2 className="text-3xl font-bold text-gray-800 mb-8">
+              Viele Schichten – viele Rollen
+              </h2>
+              
+              <p className="text-base text-gray-700 mb-6">Aber warum braucht es so viele sich ähnelnde, wiederholte Komponenten? <br></br>Sprachverstehen lässt sich als Zusammenspiel vieler Teilaufgaben denken: zum Beispiel zu erkennen, auf welches Nomen sich ein Adjektiv bezieht oder welche Entität mit einem Pronomen gemeint ist.</p>
+              <p className="text-base text-gray-700 mb-8">Analysen haben gezeigt, dass in BERT tatsächlich spezialisierte Attention-Heads entstehen, die genau solche Aufgaben übernehmen:</p>
                 <SpecializedHeadViz 
                   headTitle="Nomen-Modifikator-Head"
                   description="Nomen-Modifikatoren (z.B. Artikel) richten ihre Aufmerksamkeit auf ihr Nomen"
@@ -526,42 +450,36 @@ export default function Page() {
                     }
                   ]}
                 />
-                <p style={{ marginTop: 20}}>Jede dieser Komponenten trägt zur schrittweisen Bedeutungsbildung bei. Gemeinsam erzeugen sie eine strukturierte Repräsentation – viele kleine Entscheidungen, die nach und nach im CLS-Vektor verdichtet werden.</p>
-              </div>
+                <p className="text-base text-gray-700 mt-4">Jede dieser Komponenten trägt zur schrittweisen Bedeutungsbildung bei. Gemeinsam erzeugen sie eine strukturierte Repräsentation – viele kleine Entscheidungen, die nach und nach im CLS-Vektor verdichtet werden.</p>
             </div>
           </section>
           <section id="klassifizierung">
-            <div style={{ display: "flex", alignItems: "flex-start", marginBottom: 160 }}>
-              <RotatedSectionTitle label="Klassifizierung" />
-              <div style={{ flex: 1 }}>
-                <p style={{ marginBottom: 32}}>Am Ende betrachten wir nur noch den CLS-Vektor aus dem letzten Layer. Dieser enthält alle Informationen, die das Modell aus dem Satz extrahiert hat.
-                  Doch wie gelangt das Modell nun von einem Vektor mit z. B. 768 Dimensionen zu einer Entscheidung über 10 mögliche Labels wie „Catering“, „Location“ oder „Veranstaltungstechnik“?
-                  Die Antwort: Eine einfache lineare Projektion. Für jedes Label existiert ein eigener Gewichtungsvektor, der überprüft, ob der CLS-Vektor „in die richtige Richtung zeigt“. In der nächsten Ansicht zeigen wir, welche semantischen Richtungen das Modell gelernt hat – und wie der CLS-Vektor eines Textes mit diesen Richtungen in Beziehung steht.
+            <div className="mb-12">
+              <h2 className="text-3xl font-bold text-gray-800 mb-8">
+              Vom CLS zur Klassifikation
+              </h2>
+                <p className="text-base text-gray-700 mb-6">Am Ende der Verarbeitung steht der [CLS]-Vektor aus der letzten Schicht. Er enthält die verdichteten Informationen des gesamten Satzes – alles, was das Modell an Kontext und Bedeutung herausgearbeitet hat. 
+                </p>
+                <p className="text-base text-gray-700 mb-6">
+                Für die eigentliche Klassifikation genügt nun ein einfacher Schritt: Der CLS-Vektor wird durch eine lineare Projektion auf die Zielkategorien abgebildet. Für jedes Label existiert ein Gewichtungsvektor, der prüft, ob der CLS-Vektor „in diese Richtung zeigt“. 
+                </p>
+                  <p className="text-base text-gray-700 mb-8">
+                    So entsteht eine Wahrscheinlichkeit für jedes Label – zum Beispiel Catering, Locations und Räume oder Veranstaltungstechnik. Auf diese Weise wird aus einem hochdimensionalen Vektor eine konkrete Entscheidung, die für uns wieder unmittelbar verständlich ist.
                   </p>
-                <div style={{
-                  border: "1px solid #ddd",
-                  borderRadius: 8,
-                  background: "#fff",
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.03)",
-                  padding: 24,
-                  position: "relative"
-                }}>
-                  <div style={{
-                    fontSize: 12,
-                    color: "#999",
-                    position: "absolute",
-                    top: -8,
-                    left: 12,
-                    background: "#fff",
-                    padding: "0 8px"
-                  }}>Classification Layer</div>
+                <LabeledContainer label="Classification Layer">
                   <ClsToOutputViz />
-                </div>
-              </div>
+                </LabeledContainer>
+                
+                <p className="text-base text-gray-700 mb-6 mt-8">
+                  Wir haben einen einzelnen Satz durch alle Stationen von BERT begleitet – vom Rohtext über Embeddings und Attention bis hin zur finalen Entscheidung. Was zunächst wie eine Blackbox erscheint, zeigt sich bei näherem Hinsehen als eine Abfolge klar strukturierter Schritte. Jede Schicht trägt ihren Teil dazu bei, bis im [CLS]-Vektor eine verdichtete Repräsentation entsteht, die für die Klassifikation genutzt wird.
+                </p>
+                <p className="text-base text-gray-700 mb-8">
+                  Damit wird deutlich: Sprachmodelle arbeiten nicht magisch, sondern systematisch. Indem wir ihre Mechanismen sichtbar machen, können wir besser nachvollziehen, wie sie Bedeutung konstruieren – und zugleich Fragen stellen, wo sie an ihre Grenzen stoßen.
+                </p>
             </div>
           </section>
         </div>
       </div>
-    </main>
+      </main>
   );
 } 

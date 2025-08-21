@@ -10,7 +10,7 @@ type EmbeddingPoint = {
 type Props = {
   data: EmbeddingPoint[];
   selectedToken?: string;
-  onHover?: (token: string | null) => void;
+  onTokenSelect?: (token: string | null) => void;
   width?: number;
   height?: number;
 };
@@ -18,23 +18,47 @@ type Props = {
 const EmbeddingSpaceMap: React.FC<Props> = ({
   data,
   selectedToken,
-  onHover,
-  width = 1000,
+  onTokenSelect,
+  width = 800,
   height = 350,
 }) => {
   const transformRef = useRef<ReactZoomPanPinchRef | null>(null);
 
-  // Compute bounds for scaling
+  // Compute bounds for scaling with padding for text labels
   const xs = data.map(d => d.x);
   const ys = data.map(d => d.y);
   const minX = Math.min(...xs), maxX = Math.max(...xs);
   const minY = Math.min(...ys), maxY = Math.max(...ys);
 
-  // Scale function
+  // Add padding to prevent clipping of text labels
+  const textPadding = 30; // Increased padding for text labels
+  
+  // Scale function with better padding
   const scaleX = (x: number) =>
-    ((x - minX) / (maxX - minX || 1)) * (width - 40) + 20;
+    ((x - minX) / (maxX - minX || 1)) * (width - 2 * textPadding) + textPadding;
   const scaleY = (y: number) =>
-    height - (((y - minY) / (maxY - minY || 1)) * (height - 40) + 20);
+    height - (((y - minY) / (maxY - minY || 1)) * (height - 2 * textPadding) + textPadding);
+
+  // Smart text positioning to avoid clipping
+  const getTextPosition = (x: number, y: number, token: string) => {
+    const fontSize = 15;
+    const textHeight = fontSize * 1.2; // Approximate text height
+    
+    // Check if text would clip at the top
+    if (y - textHeight < textPadding) {
+      // Position text below the point if it would clip at top
+      return { x, y: y + 20 };
+    }
+    
+    // Check if text would clip at the bottom
+    if (y + textHeight > height - textPadding) {
+      // Position text above the point if it would clip at bottom
+      return { x, y: y - 20 };
+    }
+    
+    // Default: position text above the point
+    return { x, y: y - 10 };
+  };
 
   // Auto-zoom to selected token
   useEffect(() => {
@@ -45,83 +69,61 @@ const EmbeddingSpaceMap: React.FC<Props> = ({
     const y = scaleY(point.y);
     // Center and zoom in (adjust scale as needed)
     transformRef.current.setTransform(
-      width / 2 - x * 3, // panX
-      height / 2 - y * 3, // panY
-      3, // scale
-      200, // animation time ms
-      "easeOut"
+      width / 2 - x * 1, // panX - reduced from 3 to 1.5
+      height / 2 - y * 1, // panY - reduced from 3 to 1.5
+      1, // scale - reduced from 3 to 1.5
+      1000, // animation time ms
+      "easeInOutQuad"
     );
   }, [selectedToken, data, width, height]);
-
-  // Reset handler
-  const handleReset = () => {
-    if (transformRef.current) {
-      transformRef.current.resetTransform();
-    }
-  };
 
   if (!data || data.length === 0) return null;
 
   return (
     <div style={{ position: "relative", width, height }}>
-      {/* Reset button */}
-      <button
-        onClick={handleReset}
-        style={{
-          position: "absolute",
-          top: 10,
-          right: 10,
-          zIndex: 2,
-          background: "rgba(255,255,255,0.8)",
-          border: "1px solid #ccc",
-          borderRadius: "50%",
-          width: 32,
-          height: 32,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: "pointer",
-          boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-          padding: 0,
-        }}
-        title="Reset Zoom"
-      >
-        {/* Minimal circular arrow icon */}
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M9 3a6 6 0 1 1-4.24 1.76" />
-          <polyline points="5 3 9 3 9 7" />
-        </svg>
-      </button>
       <TransformWrapper ref={transformRef} minScale={1} maxScale={10} initialScale={1} centerOnInit>
         <TransformComponent>
-          <svg width={width} height={height} style={{ background: "#fff" }}>
+          <svg 
+            width={width} 
+            height={height} 
+            style={{ background: "#fff" }}
+            overflow="visible" // Allow content to overflow for better text visibility
+          >
             {/* All points */}
-            {data.map((d, i) => (
-              <g key={i}>
-                <circle
-                  cx={scaleX(d.x)}
-                  cy={scaleY(d.y)}
-                  r={4}
-                  fill={d.token === selectedToken ? "black" : "grey"}
-                  opacity={d.token === selectedToken ? 1 : 0.15}
-                  onMouseEnter={() => onHover && onHover(d.token)}
-                  onMouseLeave={() => onHover && onHover(null)}
-                  style={{ cursor: "pointer" }}
-                />
-                <text
-                  x={scaleX(d.x)}
-                  y={scaleY(d.y) - 10}
-                  fontWeight={d.token === selectedToken ? "bold" : "normal"}
-                  fontSize={15}
-                  fill={d.token === selectedToken ? "black" : "grey"}
-                  opacity={d.token === selectedToken ? 1 : 0.15}
-                  textAnchor="middle"
-                  style={{ pointerEvents: "none" }}
-                >
-                  {d.token}
-                </text>
-              </g>
-            ))}
+            {data.map((d, i) => {
+              const pointX = scaleX(d.x);
+              const pointY = scaleY(d.y);
+              const textPos = getTextPosition(pointX, pointY, d.token);
+              
+              return (
+                <g key={i}>
+                  <circle
+                    cx={pointX}
+                    cy={pointY}
+                    r={4}
+                    fill={d.token === selectedToken ? "black" : "grey"}
+                    opacity={d.token === selectedToken ? 1 : 0.15}
+                    onMouseEnter={() => onTokenSelect && onTokenSelect(d.token)}
+                    onMouseLeave={() => onTokenSelect && onTokenSelect(null)}
+                    onClick={() => onTokenSelect && onTokenSelect(d.token)}
+                    style={{ cursor: "pointer" }}
+                  />
+                  <text
+                    x={textPos.x}
+                    y={textPos.y}
+                    fontWeight={d.token === selectedToken ? "bold" : "normal"}
+                    fontSize={15}
+                    fill={d.token === selectedToken ? "black" : "grey"}
+                    opacity={d.token === selectedToken ? 1 : 0.15}
+                    textAnchor="middle"
+                    dominantBaseline="middle" // Better text alignment
+                    style={{ pointerEvents: "none" }}
+                  >
+                    {d.token}
+                  </text>
+                </g>
+              );
+            })}
           </svg>
         </TransformComponent>
       </TransformWrapper>

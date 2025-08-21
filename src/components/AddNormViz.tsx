@@ -15,13 +15,13 @@ export default function AddNormViz({ selectedTokenIndex = 0 }: AddNormVizProps) 
   const headBoxHeight = 40;
   
   // Positions
-  const inputX = 50;
+  const inputX = 0;
   const inputY = 20;
-  const headsStartX = 350;
+  const headsStartX = 220;
   const headsY = 120;
-  const residualX = 50;
+  const residualX = inputX;
   const residualY = 220;
-  const normX = 50;
+  const normX = inputX;
   const normY = 330;
 
   return (

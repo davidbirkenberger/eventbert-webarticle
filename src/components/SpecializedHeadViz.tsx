@@ -1,4 +1,5 @@
 import React from "react";
+import LabeledContainer from "./LabeledContainer";
 
 interface SpecializedHeadVizProps {
   headTitle: string;
@@ -14,13 +15,7 @@ interface SpecializedHeadVizProps {
 export default function SpecializedHeadViz({ headTitle, description, examples }: SpecializedHeadVizProps) {
   return (
     <div style={{ marginTop: 32 }}>
-      <div style={{ 
-        border: "1px solid #ddd", 
-        borderRadius: 8, 
-        padding: 24, 
-        background: "#fff",
-        boxShadow: "0 1px 2px rgba(0,0,0,0.03)"
-      }}>
+      <LabeledContainer label={headTitle}>
         <h3 style={{ margin: "0 0 16px 0", fontSize: 20, fontWeight: "bold", color: "#333" }}>
           {headTitle}
         </h3>
@@ -152,7 +147,7 @@ export default function SpecializedHeadViz({ headTitle, description, examples }:
         }}>
           Quelle: Kevin Clark, Urvashi Khandelwal, Omer Levy, and Christopher D. Manning. 2019. What Does BERT Look at? An Analysis of BERT's Attention. In <em>Proceedings of the 2019 ACL Workshop BlackboxNLP: Analyzing and Interpreting Neural Networks for NLP</em>, pages 276–286, Florence, Italy. Association for Computational Linguistics. <a href="https://aclanthology.org/W19-4828/" target="_blank" rel="noopener noreferrer" style={{ color: "#1976d2", textDecoration: "none" }}>https://aclanthology.org/W19-4828/</a>
         </div>
-      </div>
+      </LabeledContainer>
     </div>
   );
 } 

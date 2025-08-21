@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { useClsConnectionsData } from "../hooks/useClsConnectionsData";
+import { useModelData } from "../hooks/useModelData";
 
 const CLS_LABEL = "CLS Token";
 const OUTPUT_LABELS = [
@@ -27,7 +27,7 @@ function getWeightWidth(weight: number, maxAbs: number) {
 }
 
 export default function ClsToOutputViz() {
-  const { data, loading, error } = useClsConnectionsData();
+  const { data, loading, error } = useModelData();
 
   // Animation: Einmal abspielen, sobald Section sichtbar wird
   const [t, setT] = useState(0);
@@ -90,20 +90,22 @@ export default function ClsToOutputViz() {
   }
 
   const cls_embedding = data.cls_embedding || [];
-  const logits = data.logits || [];
-  const classifier_weight = data.classifier_weight || [];
-
-  const CLS_NEURON_COUNT = 20;
+  const connections = data.cls_to_output_connections || [];
+  
+  // Verwende die ersten 20 CLS-Neuronen
+  const CLS_NEURON_COUNT = 15;
   const clsValues = cls_embedding.slice(0, CLS_NEURON_COUNT);
-  const numOutputs = logits.length;
+  
+  // Verwende die echten Verbindungen aus den Daten
+  const numOutputs = Math.min(connections.length, 10);
 
-  // Layout constants
-  const neuronRadius = 20; // increased size for both sides
+  // Layout constants - responsive design
+  const neuronRadius = 20;
   const clsX = 60;
-  const outX = 520;
-  const width = outX + neuronRadius * 2 + 380;
+  const outX = Math.min(480, 350 + (numOutputs * 15)); // Responsive output position
+  const width = Math.min(outX + neuronRadius * 2 + 320, 1000); // Max width to prevent horizontal scroll
   const clsYStart = 60;
-  const clsYStep = 48; // more buffer between neurons
+  const clsYStep = 48;
   const outYStart = 60;
   const outYStep = Math.max((clsYStep * (CLS_NEURON_COUNT - 1)) / (numOutputs - 1), 44);
   const height = Math.max(
@@ -111,11 +113,11 @@ export default function ClsToOutputViz() {
     outYStart + numOutputs * outYStep + neuronRadius * 2
   );
 
-  // Find max absolute weight for normalization
+  // Find max absolute connection strength for normalization
   let maxAbsWeight = 1;
-  if (classifier_weight && classifier_weight.length && classifier_weight[0].length) {
+  if (connections.length > 0) {
     maxAbsWeight = Math.max(
-      ...classifier_weight.slice(0, numOutputs).flatMap(row => row.slice(0, CLS_NEURON_COUNT).map(Math.abs))
+      ...connections.slice(0, numOutputs).map(conn => Math.abs(conn.connection_strength))
     );
     if (maxAbsWeight === 0) maxAbsWeight = 1;
   }
@@ -135,10 +137,11 @@ export default function ClsToOutputViz() {
         {/* Draw all connections */}
         {Array.from({ length: numOutputs }).map((_, outIdx) =>
           clsValues.map((_, clsIdx) => {
-            const weight =
-              classifier_weight && classifier_weight[outIdx] && classifier_weight[outIdx][clsIdx] !== undefined
-                ? classifier_weight[outIdx][clsIdx]
-                : 0;
+            // Verwende die echten Gewichte aus der Gewichtsmatrix
+            const connection = connections[outIdx];
+            const weight = connection && connection.weights && connection.weights[clsIdx] !== undefined 
+              ? connection.weights[clsIdx] 
+              : 0;
             // Start- und Endpunkte
             const x1 = clsX + neuronRadius;
             const y1 = clsYStart + clsIdx * clsYStep + neuronRadius;
@@ -214,8 +217,8 @@ export default function ClsToOutputViz() {
               cx={clsX + neuronRadius}
               cy={clsYStart + i * clsYStep + neuronRadius}
               r={neuronRadius}
-              fill="#fff"
-              stroke="#aaa"
+              fill="#ddd"
+              stroke="#eee"
               strokeWidth={2}
             />
             <text
@@ -223,15 +226,20 @@ export default function ClsToOutputViz() {
               y={clsYStart + i * clsYStep + neuronRadius + 1}
               textAnchor="middle"
               alignmentBaseline="middle"
-              fontWeight="normal"
-              fontSize={13}
-              fill="#222"
+              fontWeight="bold"
+              fontSize={11.5}
+              fill="#444"
               style={{ userSelect: "none" }}
             >
               {val.toFixed(2)}
             </text>
           </g>
         ))}
+        
+        {/* Three horizontal dots below the last CLS neuron indicating more neurons */}
+        <circle cx={clsX + neuronRadius - 8} cy={clsYStart + (CLS_NEURON_COUNT - 1) * clsYStep + neuronRadius * 2 + 20} r={2} fill="#999" />
+        <circle cx={clsX + neuronRadius} cy={clsYStart + (CLS_NEURON_COUNT - 1) * clsYStep + neuronRadius * 2 + 20} r={2} fill="#999" />
+        <circle cx={clsX + neuronRadius + 8} cy={clsYStart + (CLS_NEURON_COUNT - 1) * clsYStep + neuronRadius * 2 + 20} r={2} fill="#999" />
         {/* Draw output neuron circles */}
         {OUTPUT_LABELS.slice(0, numOutputs).map((_, i) => (
           <circle
@@ -239,25 +247,25 @@ export default function ClsToOutputViz() {
             cx={outX + neuronRadius}
             cy={outYStart + i * outYStep + neuronRadius}
             r={neuronRadius}
-            fill="#fff"
-            stroke="#aaa"
+            fill="#ddd"
+            stroke="#eee"
             strokeWidth={2}
           />
         ))}
-        {/* Draw logits inside output neuron circles */}
-        {logits.slice(0, numOutputs).map((logit, i) => (
+        {/* Draw final probability values inside output neuron circles */}
+        {connections.slice(0, numOutputs).map((connection, i) => (
           <text
-            key={`out-logit-${i}`}
+            key={`out-probability-${i}`}
             x={outX + neuronRadius}
             y={outYStart + i * outYStep + neuronRadius + 1}
             textAnchor="middle"
             alignmentBaseline="middle"
-            fontWeight="normal"
-            fontSize={13}
-            fill="#222"
+            fontWeight="bold"
+            fontSize={11.5}
+            fill="#444"
             style={{ userSelect: "none" }}
           >
-            {logit !== undefined ? logit.toFixed(2) : ""}
+            {connection.probability.toFixed(3)}
           </text>
         ))}
       </svg>
@@ -267,10 +275,10 @@ export default function ClsToOutputViz() {
       </div>
       {/* Output classes - simplified with direct final values */}
       <div style={{ position: "absolute", left: outX + neuronRadius * 2 + 24, top: 0, zIndex: 1, height, width: 320, display: "flex", flexDirection: "column", justifyContent: "flex-start" }}>
-        {logits.slice(0, numOutputs).map((logit, i) => {
-          const sig = sigmoid(logit);
-          const threshold = THRESHOLDS[i] ?? 0.5;
-          const active = sig >= threshold;
+        {connections.slice(0, numOutputs).map((connection, i) => {
+          const probability = connection.probability;
+          const threshold = 0.5; // Standard-Schwellwert für Wahrscheinlichkeiten
+          const active = probability >= threshold;
           return (
             <div
               key={i}

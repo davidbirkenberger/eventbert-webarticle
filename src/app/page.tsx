@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useModelData } from "@/hooks/useModelData";
 import { useVocabNeighbors } from "../hooks/useVocabNeighbors";
+import { useSentenceAttention } from "../hooks/useSentenceAttention";
 import ClsToOutputViz from "../components/ClsToOutputViz";
 import SpecializedHeadViz from "../components/SpecializedHeadViz";
 import TokenEmbeddingsPanel from "../components/TokenEmbeddingsPanel";
@@ -10,6 +11,7 @@ import AttentionMatrixViz from "../components/AttentionMatrixViz";
 import TransformerBlockWrapper from "../components/TransformerBlockWrapper";
 import LabeledContainer from "../components/LabeledContainer";
 import VocabNeighborsViz from "../components/VocabNeighborsViz";
+import ModelCard from "../components/ModelCard";
 
 // Helper component for the raw text card
 const RawTextCard: React.FC = () => {
@@ -165,6 +167,7 @@ export default function Page() {
   // Use the new consolidated data hook
   const { data: modelData, loading, error } = useModelData();
   const { data: vocabNeighbors, loading: vocabLoading, error: vocabError, fullVocabData, neighborsByToken } = useVocabNeighbors();
+  const { data: sentenceAttentionData, loading: sentenceAttentionLoading, error: sentenceAttentionError } = useSentenceAttention();
   
 
   
@@ -235,6 +238,7 @@ export default function Page() {
         <nav className="sticky top-20 w-52 h-fit-content flex-shrink-0 bg-transparent p-5">
           <div className="font-bold text-3xl mb-6 text-gray-600">Inhalt</div>
           <ul className="list-none p-0 m-0 text-lg text-gray-600">
+            <li className="mb-4"><a href="#model-card" className="text-gray-600 no-underline hover:underline">Model Card</a></li>
             <li className="mb-4"><a href="#unternehmenstext" className="text-gray-600 no-underline hover:underline">Website-Text</a></li>
             <li className="mb-4"><a href="#embeddings" className="text-gray-600 no-underline hover:underline">Embeddings</a></li>
             <li className="mb-4"><a href="#vocab-neighbors" className="text-gray-600 no-underline hover:underline">Vocabulary Neighbors</a></li>
@@ -386,71 +390,24 @@ Dieses Token hat keine eigene Bedeutung im Sprachsinn. Stattdessen dient es als 
               Viele Schichten – viele Rollen
               </h2>
               
-              <p className="text-base text-gray-700 mb-6">Aber warum braucht es so viele sich ähnelnde, wiederholte Komponenten? <br></br>Sprachverstehen lässt sich als Zusammenspiel vieler Teilaufgaben denken: zum Beispiel zu erkennen, auf welches Nomen sich ein Adjektiv bezieht oder welche Entität mit einem Pronomen gemeint ist.</p>
-              <p className="text-base text-gray-700 mb-8">Analysen haben gezeigt, dass in BERT tatsächlich spezialisierte Attention-Heads entstehen, die genau solche Aufgaben übernehmen:</p>
-                <SpecializedHeadViz 
-                  headTitle="Nomen-Modifikator-Head"
-                  description="Nomen-Modifikatoren (z.B. Artikel) richten ihre Aufmerksamkeit auf ihr Nomen"
-                  examples={[
-                    {
-                      sentence: "The complicated language in the huge new law has muddied the fight.",
-                      tokens: ["[CLS]", "The", "complicated", "language", "in", "the", "huge", "new", "law", "has", "muddied", "the", "fight", "[SEP]"],
-                      attentionMatrix: [
-                        [0.8, 0.05, 0.05, 0.05, 0.05, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // CLS -> CLS
-                        [0, 0.1, 0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1], // The -> distributed
-                        [0, 0, 0.8, 0.05, 0.02, 0.02, 0.02, 0.02, 0.02, 0, 0, 0, 0, 0],  // complicated -> language
-                        [0, 0, 0, 0.8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // language -> language
-                        [0, 0, 0, 0, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1], // in -> distributed
-                        [0, 0, 0, 0, 0, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1], // the -> distributed
-                        [0, 0, 0, 0, 0, 0, 0.1, 0.1, 0.8, 0, 0, 0, 0, 0],  // huge -> law
-                        [0, 0, 0, 0, 0, 0, 0, 0.1, 0.8, 0, 0, 0, 0, 0],  // new -> law
-                        [0, 0, 0, 0, 0, 0, 0, 0, 0.8, 0, 0, 0, 0, 0],  // law -> law
-                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0.1, 0.1, 0.1, 0.1], // has -> distributed
-                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0.1, 0.8, 0],  // muddied -> fight
-                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0.1, 0.1], // the -> distributed
-                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.8, 0],  // fight -> fight
-                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.8]   // SEP -> SEP
-                      ],
-                      highlightedConnections: [
-                        {from: 2, to: 3},   // "complicated" -> "language"
-                        {from: 6, to: 8},   // "huge" -> "law"
-                        {from: 7, to: 8},   // "new" -> "law"
-                        {from: 10, to: 12}  // "muddied" -> "fight"
-                      ]
-                    },
-                    {
-                      sentence: "The 45-year-old former General Electric Co. executive figures it will be easier this time.",
-                      tokens: ["[CLS]", "The", "45-year-old", "former", "General", "Electric", "Co.", "executive", "figures", "it", "will", "be", "easier", "this", "time", "[SEP]"],
-                      attentionMatrix: [
-                        [0.8, 0.05, 0.05, 0.05, 0.05, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // CLS -> CLS
-                        [0, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.8, 0, 0, 0, 0, 0, 0, 0, 0], // The -> executive
-                        [0, 0, 0.1, 0.1, 0.1, 0.1, 0.1, 0.8, 0, 0, 0, 0, 0, 0, 0, 0],  // 45-year-old -> executive
-                        [0, 0, 0, 0.1, 0.1, 0.1, 0.1, 0.8, 0, 0, 0, 0, 0, 0, 0, 0],  // former -> executive
-                        [0, 0, 0, 0, 0.1, 0.1, 0.1, 0.8, 0, 0, 0, 0, 0, 0, 0, 0],  // General -> executive
-                        [0, 0, 0, 0, 0, 0.1, 0.1, 0.8, 0, 0, 0, 0, 0, 0, 0, 0],  // Electric -> executive
-                        [0, 0, 0, 0, 0, 0, 0.1, 0.8, 0, 0, 0, 0, 0, 0, 0, 0],  // Co. -> executive
-                        [0, 0, 0, 0, 0, 0, 0, 0.8, 0, 0, 0, 0, 0, 0, 0, 0],  // executive -> executive
-                        [0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1], // figures -> distributed
-                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0.1, 0.1, 0.1, 0.1, 0.8, 0], // it -> time
-                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1], // will -> distributed
-                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0.1, 0.1, 0.1, 0.1], // be -> distributed
-                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0.1, 0.1, 0.1], // easier -> distributed
-                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0.8, 0],  // this -> time
-                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.8, 0],  // time -> time
-                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.8]   // SEP -> SEP
-                      ],
-                      highlightedConnections: [
-                        {from: 2, to: 7},   // "45-year-old" -> "executive"
-                        {from: 3, to: 7},   // "former" -> "executive"
-                        {from: 4, to: 7},   // "General" -> "executive"
-                        {from: 5, to: 7},   // "Electric" -> "executive"
-                        {from: 6, to: 7},   // "Co." -> "executive"
-                        {from: 13, to: 14}  // "this" -> "time"
-                      ]
-                    }
-                  ]}
-                />
+              <p className="text-base text-gray-700 mb-6">Aber warum braucht es so viele sich ähnelnde, wiederholte Komponenten?
+              Sprachverstehen lässt sich als Zusammenspiel vieler Teilaufgaben denken – etwa zu erkennen, auf welches Nomen sich ein Adjektiv bezieht oder welche Entität mit einem Pronomen gemeint ist.</p>
+              <p className="text-base text-gray-700 mb-8">Analysen haben gezeigt, dass in BERT-Modellen spezialisierte Attention-Heads entstehen, die genau solche Aufgaben übernehmen. Auch in unserem Modell lassen sich diese Spezialisierungen beobachten: So verdeutlichen L7-H10 und L7-H6, wie verschiedene Köpfe jeweils unterschiedliche Relationen zwischen Wörtern abbilden.</p>
+                {sentenceAttentionData ? (
+                  <SpecializedHeadViz 
+                    headTitle="Spezialisierte Attention-Heads"
+                    description=""
+                    useWordLevelData={true}
+                    sentenceAttentionData={sentenceAttentionData}
+                    layerIndex={7}
+                    headIndex={6}
+                  />
+                ) : (
+                  <div className="text-center py-8 text-gray-600">Lade Attention-Head-Daten…</div>
+                )}
                 <p className="text-base text-gray-700 mt-4">Jede dieser Komponenten trägt zur schrittweisen Bedeutungsbildung bei. Gemeinsam erzeugen sie eine strukturierte Repräsentation – viele kleine Entscheidungen, die nach und nach im CLS-Vektor verdichtet werden.</p>
+                
+                
             </div>
           </section>
           <section id="klassifizierung">
@@ -476,7 +433,16 @@ Dieses Token hat keine eigene Bedeutung im Sprachsinn. Stattdessen dient es als 
                 <p className="text-base text-gray-700 mb-8">
                   Damit wird deutlich: Sprachmodelle arbeiten nicht magisch, sondern systematisch. Indem wir ihre Mechanismen sichtbar machen, können wir besser nachvollziehen, wie sie Bedeutung konstruieren – und zugleich Fragen stellen, wo sie an ihre Grenzen stoßen.
                 </p>
+                
+                <p className="text-base text-gray-700 mb-8">
+                  Das Modell, das wir hier analysiert haben, kann für eigene Anwendungen genutzt werden. Im folgenden Abschnitt finden Sie alle wichtigen technischen Details, Evaluationsergebnisse und Nutzungshinweise, die als Grundlage für die praktische Anwendung dienen können.
+                </p>
             </div>
+          </section>
+          
+          {/* Model Card section */}
+          <section id="model-card" className="mt-16 pt-8 border-t border-gray-200">
+            <ModelCard />
           </section>
         </div>
       </div>

@@ -5,13 +5,13 @@ const CLS_LABEL = "CLS Token";
 const OUTPUT_LABELS = [
   "Veranstalter",
   "Locations und Räume",
-  "Agenturen",
-  "Messebau und Technik",
-  "Vermittler und Management",
   "Catering",
+  "Agenturen",
+  "Technik, Bühnen- und Messebau",
   "Service",
+  "Vermittler/Management",
+  "Kreativ",
   "Entertainment",
-  "Kreative",
   "Hersteller",
 ];
 
@@ -92,12 +92,15 @@ export default function ClsToOutputViz() {
   const cls_embedding = data.cls_embedding || [];
   const connections = data.cls_to_output_connections || [];
   
+  // Sort connections back to original class order (by class_id) instead of probability order
+  const sortedConnections = [...connections].sort((a, b) => a.class_id - b.class_id);
+  
   // Verwende die ersten 20 CLS-Neuronen
   const CLS_NEURON_COUNT = 15;
   const clsValues = cls_embedding.slice(0, CLS_NEURON_COUNT);
   
-  // Verwende die echten Verbindungen aus den Daten
-  const numOutputs = Math.min(connections.length, 10);
+  // Verwende die echten Verbindungen aus den Daten, sortiert nach class_id (nicht nach Wahrscheinlichkeit)
+  const numOutputs = Math.min(sortedConnections.length, 10);
 
   // Layout constants - responsive design
   const neuronRadius = 20;
@@ -115,9 +118,9 @@ export default function ClsToOutputViz() {
 
   // Find max absolute connection strength for normalization
   let maxAbsWeight = 1;
-  if (connections.length > 0) {
+  if (sortedConnections.length > 0) {
     maxAbsWeight = Math.max(
-      ...connections.slice(0, numOutputs).map(conn => Math.abs(conn.connection_strength))
+      ...sortedConnections.slice(0, numOutputs).map(conn => Math.abs(conn.connection_strength))
     );
     if (maxAbsWeight === 0) maxAbsWeight = 1;
   }
@@ -138,7 +141,7 @@ export default function ClsToOutputViz() {
         {Array.from({ length: numOutputs }).map((_, outIdx) =>
           clsValues.map((_, clsIdx) => {
             // Verwende die echten Gewichte aus der Gewichtsmatrix
-            const connection = connections[outIdx];
+            const connection = sortedConnections[outIdx];
             const weight = connection && connection.weights && connection.weights[clsIdx] !== undefined 
               ? connection.weights[clsIdx] 
               : 0;
@@ -253,7 +256,7 @@ export default function ClsToOutputViz() {
           />
         ))}
         {/* Draw final probability values inside output neuron circles */}
-        {connections.slice(0, numOutputs).map((connection, i) => (
+        {sortedConnections.slice(0, numOutputs).map((connection, i) => (
           <text
             key={`out-probability-${i}`}
             x={outX + neuronRadius}
@@ -275,7 +278,7 @@ export default function ClsToOutputViz() {
       </div>
       {/* Output classes - simplified with direct final values */}
       <div style={{ position: "absolute", left: outX + neuronRadius * 2 + 24, top: 0, zIndex: 1, height, width: 320, display: "flex", flexDirection: "column", justifyContent: "flex-start" }}>
-        {connections.slice(0, numOutputs).map((connection, i) => {
+        {sortedConnections.slice(0, numOutputs).map((connection, i) => {
           const probability = connection.probability;
           const threshold = 0.5; // Standard-Schwellwert für Wahrscheinlichkeiten
           const active = probability >= threshold;

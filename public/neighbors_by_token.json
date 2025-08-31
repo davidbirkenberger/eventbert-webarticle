@@ -203,106 +203,106 @@
       "similarity": 0.255
     }
   ],
-  "elegante": [
+  "exklusive": [
     {
-      "token_id": 28337,
-      "token": "elegant",
-      "similarity": 0.984
+      "token_id": 19811,
+      "token": "exklusiv",
+      "similarity": 0.967
     },
     {
-      "token_id": 27882,
-      "token": "eleganten",
-      "similarity": 0.953
+      "token_id": 16725,
+      "token": "premium",
+      "similarity": 0.602
     },
     {
-      "token_id": 29397,
-      "token": "komfortable",
-      "similarity": 0.48
+      "token_id": 30442,
+      "token": "xxl",
+      "similarity": 0.537
     },
     {
-      "token_id": 27840,
-      "token": "komfortabel",
-      "similarity": 0.468
+      "token_id": 15570,
+      "token": "conc",
+      "similarity": 0.449
     },
     {
-      "token_id": 13950,
-      "token": "bequem",
-      "similarity": 0.467
+      "token_id": 21422,
+      "token": "item",
+      "similarity": 0.446
     },
     {
-      "token_id": 29204,
-      "token": "angenehmen",
-      "similarity": 0.445
+      "token_id": 28086,
+      "token": "items",
+      "similarity": 0.446
     },
     {
-      "token_id": 28034,
-      "token": "angenehme",
-      "similarity": 0.44
+      "token_id": 10892,
+      "token": "konk",
+      "similarity": 0.429
     },
     {
-      "token_id": 17965,
-      "token": "angenehm",
-      "similarity": 0.422
+      "token_id": 20428,
+      "token": "##exkl",
+      "similarity": 0.41
     },
     {
-      "token_id": 17434,
-      "token": "glanz",
-      "similarity": 0.411
+      "token_id": 26577,
+      "token": "blume",
+      "similarity": 0.406
     },
     {
-      "token_id": 21019,
-      "token": "pracht",
-      "similarity": 0.405
+      "token_id": 16213,
+      "token": "extr",
+      "similarity": 0.395
     },
     {
-      "token_id": 30736,
-      "token": "behaglich",
-      "similarity": 0.389
+      "token_id": 11996,
+      "token": "mehrwert",
+      "similarity": 0.394
     },
     {
-      "token_id": 28380,
-      "token": "hauch",
-      "similarity": 0.34
+      "token_id": 21449,
+      "token": "##kranz",
+      "similarity": 0.39
     },
     {
-      "token_id": 28744,
-      "token": "unangenehm",
-      "similarity": 0.337
+      "token_id": 28425,
+      "token": "strauß",
+      "similarity": 0.384
     },
     {
-      "token_id": 27521,
-      "token": "impos",
-      "similarity": 0.335
+      "token_id": 2987,
+      "token": "kompl",
+      "similarity": 0.381
     },
     {
-      "token_id": 19743,
-      "token": "brill",
-      "similarity": 0.329
+      "token_id": 23884,
+      "token": "##kompl",
+      "similarity": 0.381
     },
     {
-      "token_id": 30739,
-      "token": "bezauber",
+      "token_id": 28255,
+      "token": "blumenstrauß",
+      "similarity": 0.379
+    },
+    {
+      "token_id": 17318,
+      "token": "trik",
+      "similarity": 0.351
+    },
+    {
+      "token_id": 14240,
+      "token": "cock",
+      "similarity": 0.334
+    },
+    {
+      "token_id": 21795,
+      "token": "##cock",
+      "similarity": 0.333
+    },
+    {
+      "token_id": 21515,
+      "token": "blumenstr",
       "similarity": 0.326
-    },
-    {
-      "token_id": 21505,
-      "token": "charme",
-      "similarity": 0.323
-    },
-    {
-      "token_id": 11977,
-      "token": "sehens",
-      "similarity": 0.323
-    },
-    {
-      "token_id": 28984,
-      "token": "atemberauben",
-      "similarity": 0.32
-    },
-    {
-      "token_id": 28870,
-      "token": "peinlich",
-      "similarity": 0.317
     }
   ],
   "##s": [
@@ -405,210 +405,6 @@
       "token_id": 147,
       "token": "##as",
       "similarity": 0.344
-    }
-  ],
-  "und": [
-    {
-      "token_id": 250,
-      "token": "als",
-      "similarity": 0.899
-    },
-    {
-      "token_id": 281,
-      "token": "wie",
-      "similarity": 0.855
-    },
-    {
-      "token_id": 360,
-      "token": "oder",
-      "similarity": 0.747
-    },
-    {
-      "token_id": 681,
-      "token": "sowie",
-      "similarity": 0.664
-    },
-    {
-      "token_id": 9586,
-      "token": "fur",
-      "similarity": 0.592
-    },
-    {
-      "token_id": 185,
-      "token": "von",
-      "similarity": 0.568
-    },
-    {
-      "token_id": 183,
-      "token": "mit",
-      "similarity": 0.564
-    },
-    {
-      "token_id": 193,
-      "token": "auf",
-      "similarity": 0.531
-    },
-    {
-      "token_id": 127,
-      "token": "der",
-      "similarity": 0.531
-    },
-    {
-      "token_id": 24026,
-      "token": "uber",
-      "similarity": 0.512
-    },
-    {
-      "token_id": 216,
-      "token": "aus",
-      "similarity": 0.51
-    },
-    {
-      "token_id": 329,
-      "token": "durch",
-      "similarity": 0.494
-    },
-    {
-      "token_id": 125,
-      "token": "die",
-      "similarity": 0.492
-    },
-    {
-      "token_id": 336,
-      "token": "bis",
-      "similarity": 0.49
-    },
-    {
-      "token_id": 173,
-      "token": "das",
-      "similarity": 0.46
-    },
-    {
-      "token_id": 179,
-      "token": "den",
-      "similarity": 0.454
-    },
-    {
-      "token_id": 253,
-      "token": "nach",
-      "similarity": 0.449
-    },
-    {
-      "token_id": 244,
-      "token": "bei",
-      "similarity": 0.439
-    },
-    {
-      "token_id": 472,
-      "token": "vom",
-      "similarity": 0.429
-    },
-    {
-      "token_id": 210,
-      "token": "des",
-      "similarity": 0.428
-    }
-  ],
-  "exklusive": [
-    {
-      "token_id": 19811,
-      "token": "exklusiv",
-      "similarity": 0.967
-    },
-    {
-      "token_id": 16725,
-      "token": "premium",
-      "similarity": 0.602
-    },
-    {
-      "token_id": 30442,
-      "token": "xxl",
-      "similarity": 0.537
-    },
-    {
-      "token_id": 15570,
-      "token": "conc",
-      "similarity": 0.449
-    },
-    {
-      "token_id": 21422,
-      "token": "item",
-      "similarity": 0.446
-    },
-    {
-      "token_id": 28086,
-      "token": "items",
-      "similarity": 0.446
-    },
-    {
-      "token_id": 10892,
-      "token": "konk",
-      "similarity": 0.429
-    },
-    {
-      "token_id": 20428,
-      "token": "##exkl",
-      "similarity": 0.41
-    },
-    {
-      "token_id": 26577,
-      "token": "blume",
-      "similarity": 0.406
-    },
-    {
-      "token_id": 16213,
-      "token": "extr",
-      "similarity": 0.395
-    },
-    {
-      "token_id": 11996,
-      "token": "mehrwert",
-      "similarity": 0.394
-    },
-    {
-      "token_id": 21449,
-      "token": "##kranz",
-      "similarity": 0.39
-    },
-    {
-      "token_id": 28425,
-      "token": "strauß",
-      "similarity": 0.384
-    },
-    {
-      "token_id": 2987,
-      "token": "kompl",
-      "similarity": 0.381
-    },
-    {
-      "token_id": 23884,
-      "token": "##kompl",
-      "similarity": 0.381
-    },
-    {
-      "token_id": 28255,
-      "token": "blumenstrauß",
-      "similarity": 0.379
-    },
-    {
-      "token_id": 17318,
-      "token": "trik",
-      "similarity": 0.351
-    },
-    {
-      "token_id": 14240,
-      "token": "cock",
-      "similarity": 0.334
-    },
-    {
-      "token_id": 21795,
-      "token": "##cock",
-      "similarity": 0.333
-    },
-    {
-      "token_id": 21515,
-      "token": "blumenstr",
-      "similarity": 0.326
     }
   ],
   "cater": [
@@ -813,414 +609,6 @@
       "token_id": 10912,
       "token": "##icker",
       "similarity": 0.32
-    }
-  ],
-  "fur": [
-    {
-      "token_id": 183,
-      "token": "mit",
-      "similarity": 0.835
-    },
-    {
-      "token_id": 193,
-      "token": "auf",
-      "similarity": 0.816
-    },
-    {
-      "token_id": 24026,
-      "token": "uber",
-      "similarity": 0.791
-    },
-    {
-      "token_id": 216,
-      "token": "aus",
-      "similarity": 0.744
-    },
-    {
-      "token_id": 329,
-      "token": "durch",
-      "similarity": 0.738
-    },
-    {
-      "token_id": 185,
-      "token": "von",
-      "similarity": 0.697
-    },
-    {
-      "token_id": 253,
-      "token": "nach",
-      "similarity": 0.638
-    },
-    {
-      "token_id": 143,
-      "token": "und",
-      "similarity": 0.592
-    },
-    {
-      "token_id": 250,
-      "token": "als",
-      "similarity": 0.588
-    },
-    {
-      "token_id": 283,
-      "token": "unter",
-      "similarity": 0.582
-    },
-    {
-      "token_id": 281,
-      "token": "wie",
-      "similarity": 0.55
-    },
-    {
-      "token_id": 244,
-      "token": "bei",
-      "similarity": 0.539
-    },
-    {
-      "token_id": 360,
-      "token": "oder",
-      "similarity": 0.514
-    },
-    {
-      "token_id": 249,
-      "token": "vor",
-      "similarity": 0.484
-    },
-    {
-      "token_id": 681,
-      "token": "sowie",
-      "similarity": 0.48
-    },
-    {
-      "token_id": 800,
-      "token": "beim",
-      "similarity": 0.462
-    },
-    {
-      "token_id": 472,
-      "token": "vom",
-      "similarity": 0.462
-    },
-    {
-      "token_id": 127,
-      "token": "der",
-      "similarity": 0.453
-    },
-    {
-      "token_id": 1083,
-      "token": "ohne",
-      "similarity": 0.427
-    },
-    {
-      "token_id": 125,
-      "token": "die",
-      "similarity": 0.42
-    }
-  ],
-  "unvergess": [
-    {
-      "token_id": 13444,
-      "token": "legend",
-      "similarity": 0.842
-    },
-    {
-      "token_id": 14456,
-      "token": "spektakul",
-      "similarity": 0.665
-    },
-    {
-      "token_id": 25041,
-      "token": "wiederkehr",
-      "similarity": 0.66
-    },
-    {
-      "token_id": 28984,
-      "token": "atemberauben",
-      "similarity": 0.552
-    },
-    {
-      "token_id": 11977,
-      "token": "sehens",
-      "similarity": 0.544
-    },
-    {
-      "token_id": 27521,
-      "token": "impos",
-      "similarity": 0.512
-    },
-    {
-      "token_id": 30739,
-      "token": "bezauber",
-      "similarity": 0.47
-    },
-    {
-      "token_id": 14624,
-      "token": "reiz",
-      "similarity": 0.446
-    },
-    {
-      "token_id": 21505,
-      "token": "charme",
-      "similarity": 0.438
-    },
-    {
-      "token_id": 28380,
-      "token": "hauch",
-      "similarity": 0.395
-    },
-    {
-      "token_id": 10593,
-      "token": "amaz",
-      "similarity": 0.395
-    },
-    {
-      "token_id": 19743,
-      "token": "brill",
-      "similarity": 0.34
-    },
-    {
-      "token_id": 30016,
-      "token": "einmalig",
-      "similarity": 0.332
-    },
-    {
-      "token_id": 22675,
-      "token": "einzigartig",
-      "similarity": 0.329
-    },
-    {
-      "token_id": 25189,
-      "token": "einmalige",
-      "similarity": 0.326
-    },
-    {
-      "token_id": 17329,
-      "token": "einzigartige",
-      "similarity": 0.317
-    },
-    {
-      "token_id": 21109,
-      "token": "einzigartigen",
-      "similarity": 0.315
-    },
-    {
-      "token_id": 26123,
-      "token": "kompakt",
-      "similarity": 0.304
-    },
-    {
-      "token_id": 17434,
-      "token": "glanz",
-      "similarity": 0.298
-    },
-    {
-      "token_id": 30069,
-      "token": "robust",
-      "similarity": 0.288
-    }
-  ],
-  "##liche": [
-    {
-      "token_id": 379,
-      "token": "##lichen",
-      "similarity": 0.997
-    },
-    {
-      "token_id": 1050,
-      "token": "##licher",
-      "similarity": 0.98
-    },
-    {
-      "token_id": 181,
-      "token": "##lich",
-      "similarity": 0.967
-    },
-    {
-      "token_id": 2566,
-      "token": "##liches",
-      "similarity": 0.946
-    },
-    {
-      "token_id": 9520,
-      "token": "##lichem",
-      "similarity": 0.826
-    },
-    {
-      "token_id": 5063,
-      "token": "##ischem",
-      "similarity": 0.431
-    },
-    {
-      "token_id": 1899,
-      "token": "##isches",
-      "similarity": 0.404
-    },
-    {
-      "token_id": 684,
-      "token": "##ischer",
-      "similarity": 0.399
-    },
-    {
-      "token_id": 345,
-      "token": "##ische",
-      "similarity": 0.393
-    },
-    {
-      "token_id": 251,
-      "token": "##ischen",
-      "similarity": 0.391
-    },
-    {
-      "token_id": 2755,
-      "token": "##lichkeit",
-      "similarity": 0.388
-    },
-    {
-      "token_id": 5677,
-      "token": "##lichkeiten",
-      "similarity": 0.385
-    },
-    {
-      "token_id": 187,
-      "token": "##isch",
-      "similarity": 0.384
-    },
-    {
-      "token_id": 22005,
-      "token": "##lichkeits",
-      "similarity": 0.368
-    },
-    {
-      "token_id": 9302,
-      "token": "##igem",
-      "similarity": 0.299
-    },
-    {
-      "token_id": 2842,
-      "token": "##iges",
-      "similarity": 0.285
-    },
-    {
-      "token_id": 690,
-      "token": "##iger",
-      "similarity": 0.279
-    },
-    {
-      "token_id": 405,
-      "token": "##igen",
-      "similarity": 0.279
-    },
-    {
-      "token_id": 391,
-      "token": "##ige",
-      "similarity": 0.278
-    },
-    {
-      "token_id": 209,
-      "token": "##ig",
-      "similarity": 0.276
-    }
-  ],
-  "veranstaltungen": [
-    {
-      "token_id": 12705,
-      "token": "##veranstaltung",
-      "similarity": 0.994
-    },
-    {
-      "token_id": 11728,
-      "token": "##veranstaltungen",
-      "similarity": 0.991
-    },
-    {
-      "token_id": 5857,
-      "token": "veranstaltung",
-      "similarity": 0.984
-    },
-    {
-      "token_id": 15039,
-      "token": "events",
-      "similarity": 0.807
-    },
-    {
-      "token_id": 6918,
-      "token": "event",
-      "similarity": 0.765
-    },
-    {
-      "token_id": 22932,
-      "token": "##event",
-      "similarity": 0.763
-    },
-    {
-      "token_id": 12018,
-      "token": "veranstaltungs",
-      "similarity": 0.735
-    },
-    {
-      "token_id": 26158,
-      "token": "tagungs",
-      "similarity": 0.381
-    },
-    {
-      "token_id": 11152,
-      "token": "versammlung",
-      "similarity": 0.329
-    },
-    {
-      "token_id": 5633,
-      "token": "##versammlung",
-      "similarity": 0.326
-    },
-    {
-      "token_id": 26168,
-      "token": "meeting",
-      "similarity": 0.325
-    },
-    {
-      "token_id": 22658,
-      "token": "sitzungs",
-      "similarity": 0.321
-    },
-    {
-      "token_id": 5778,
-      "token": "sitzung",
-      "similarity": 0.309
-    },
-    {
-      "token_id": 16282,
-      "token": "sitzungen",
-      "similarity": 0.308
-    },
-    {
-      "token_id": 10790,
-      "token": "tagung",
-      "similarity": 0.304
-    },
-    {
-      "token_id": 25487,
-      "token": "tagungen",
-      "similarity": 0.299
-    },
-    {
-      "token_id": 20347,
-      "token": "##sitzung",
-      "similarity": 0.297
-    },
-    {
-      "token_id": 28075,
-      "token": "##tagung",
-      "similarity": 0.296
-    },
-    {
-      "token_id": 26230,
-      "token": "session",
-      "similarity": 0.294
-    },
-    {
-      "token_id": 18655,
-      "token": "##ssitzung",
-      "similarity": 0.291
     }
   ]
 }

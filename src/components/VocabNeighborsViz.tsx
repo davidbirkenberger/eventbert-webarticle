@@ -76,7 +76,7 @@ export default function VocabNeighborsViz({
   // Define different colors for neighbors (used in both tab and map)
   const getNeighborColor = (index: number) => {
     const colors = [
-      "#ef476fff", // bright-pink-crayola
+      "#F78C6B", // orange
       "#ffd166ff", // sunglow
       "#06d6a0ff", // emerald
       "#118ab2ff", // blue-ncs
@@ -191,6 +191,13 @@ export default function VocabNeighborsViz({
     const ctx = canvasRef.current?.getContext("2d");
     if (!ctx) return;
 
+    // Set canvas dimensions
+    const canvas = canvasRef.current;
+    if (canvas) {
+      canvas.width = width;
+      canvas.height = height;
+    }
+
     ctx.clearRect(0, 0, width, height);
 
     // STEP 1: Draw all vocabulary dots with appropriate colors
@@ -272,37 +279,26 @@ export default function VocabNeighborsViz({
     if (selectedToken || hoveredPoint) {
       ctx.save();
       
-      // Highlight selected sentence token (red dot)
+      // Highlight selected sentence token (gray square)
       if (selectedToken) {
         const selectedPoint = sentencePoints.find(p => p.token === selectedToken);
         if (selectedPoint) {
           const { x, y } = toAll(selectedPoint);
           const transformed = applyTransform(x, y);
           
-          // Draw red dot on top of the existing black dot
+          // Draw gray square on top of the existing black dot
           ctx.globalCompositeOperation = 'source-over';
           ctx.beginPath();
-          const highlightSize = Math.max(3, Math.min(8, 4 * zoom));
-          ctx.arc(transformed.x, transformed.y, highlightSize, 0, Math.PI * 2);
-          ctx.fillStyle = "red";
+          const highlightSize = Math.max(15, Math.min(5, 4 * zoom));
+          const halfSize = highlightSize / 2;
+          ctx.rect(transformed.x - halfSize, transformed.y - halfSize, highlightSize, highlightSize);
+          ctx.fillStyle = "#ef476f";
           ctx.fill();
         }
       }
       
       // Highlight hovered point using composite operation
-      if (hoveredPoint) {
-        const hoveredPointData = hitAreas.current.find(h => h.token === hoveredPoint.token);
-        if (hoveredPointData) {
-          // Use 'multiply' to create a red tint effect over the existing point
-          ctx.globalCompositeOperation = 'multiply';
-          ctx.globalAlpha = 0.7;
-          
-          ctx.beginPath();
-          ctx.arc(hoveredPointData.x, hoveredPointData.y, hoveredPointData.r, 0, Math.PI * 2);
-          ctx.fillStyle = "red";
-          ctx.fill();
-        }
-      }
+
       
       ctx.restore();
     }
@@ -317,22 +313,23 @@ export default function VocabNeighborsViz({
 
       // Label styling (size scales with zoom)
       const fontSize = Math.max(10, Math.min(20, 14 * zoom));
-      ctx.font = `${fontSize}px system-ui, sans-serif`;
-      ctx.fillStyle = isActive ? "red" : "black";
+      ctx.font = isActive ? `bold ${fontSize}px system-ui, sans-serif` : `${fontSize}px system-ui, sans-serif`;
+      ctx.fillStyle = isActive ? "#ef476f" : "black";
       ctx.textBaseline = "middle";
       ctx.textAlign = "left";
       
-      // Smart label positioning - closer to dots
-      let labelX = transformed.x + 4 * zoom; // Closer to dot
+      // Smart label positioning - adaptive distance based on zoom
+      const labelDistance = Math.max(15, Math.min(8, 2 * zoom)); // Min 4px, max 8px
+      let labelX = transformed.x + labelDistance; // Adaptive distance
       let labelY = transformed.y;
       
       if (transformed.x > width * 0.7) {
-        labelX = transformed.x - 4 * zoom; // Closer to dot
+        labelX = transformed.x - labelDistance; // Use adaptive distance
         ctx.textAlign = "right";
       }
       
       if (transformed.y < height * 0.2) {
-        labelY = transformed.y + 4 * zoom; // Closer to dot
+        labelY = transformed.y + labelDistance; // Use adaptive distance
       }
       
       ctx.fillText(p.token, labelX, labelY);
@@ -462,8 +459,8 @@ export default function VocabNeighborsViz({
             found = {
               token: h.token,
               similarity: h.similarity,
-              x: e.clientX,
-              y: e.clientY,
+              x: mx,
+              y: my,
               dataX,
               dataY
             };
@@ -560,7 +557,7 @@ export default function VocabNeighborsViz({
   };
 
   return (
-    <div className={className} style={{ position: "relative" }}>
+    <div className={className} style={{ position: "relative", overflow: "hidden" }}>
       {/* Zoom controls */}
       <div style={{ 
         position: "absolute", 
@@ -596,12 +593,13 @@ export default function VocabNeighborsViz({
         <div style={{
           position: "absolute",
           top: 10,
-          right: 17,
+          right: 10,
           background: "rgba(255, 255, 255, 0.95)",
           backdropFilter: "blur(10px)",
           border: "1px solid #e0e0e0",
           borderRadius: "8px",
           padding: "16px",
+          maxWidth: "280px",
           minWidth: "200px",
           zIndex: 10,
           boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)"
@@ -650,27 +648,29 @@ export default function VocabNeighborsViz({
         <div
           ref={tooltipRef}
           style={{
-            position: "fixed",
+            position: "absolute",
             left: hoveredPoint.x + 10,
             top: hoveredPoint.y - 10,
-            background: "rgba(0, 0, 0, 0.8)",
+            background: "rgba(0, 0, 0, 0.9)",
             color: "white",
             padding: "8px 12px",
             borderRadius: "6px",
             fontSize: "12px",
             pointerEvents: "none",
             zIndex: 1000,
-            fontFamily: "monospace"
+            fontFamily: "monospace",
+            whiteSpace: "nowrap",
+            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)"
           }}
         >
-          <div>{hoveredPoint.token}</div>
+          <div style={{ fontWeight: "bold" }}>{hoveredPoint.token}</div>
           {hoveredPoint.similarity !== undefined && (
-            <div style={{ opacity: 0.8, fontSize: "11px" }}>
+            <div style={{ opacity: 0.8, fontSize: "11px", marginTop: "4px" }}>
               Similarity: {hoveredPoint.similarity.toFixed(3)}
             </div>
           )}
           {hoveredPoint.dataX !== undefined && hoveredPoint.dataY !== undefined && (
-            <div style={{ opacity: 0.8, fontSize: "11px" }}>
+            <div style={{ opacity: 0.8, fontSize: "11px", marginTop: "2px" }}>
               Data: ({hoveredPoint.dataX.toFixed(3)}, {hoveredPoint.dataY.toFixed(3)})
             </div>
           )}
@@ -684,7 +684,10 @@ export default function VocabNeighborsViz({
         style={{
           border: "1px solid #e5e7eb",
           borderRadius: 8,
-          cursor: isDragging ? "grabbing" : "grab"
+          cursor: isDragging ? "grabbing" : "grab",
+          maxWidth: "100%",
+          height: "auto",
+          imageRendering: "crisp-edges"
         }}
       />
 

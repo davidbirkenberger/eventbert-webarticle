@@ -43,7 +43,7 @@ export default function ClsToOutputViz() {
       if (start === null) start = now;
       const duration = 1200; // ms
       const elapsed = now - start;
-      let progress = Math.min(1, elapsed / duration);
+      const progress = Math.min(1, elapsed / duration);
       setT(progress);
       if (progress < 1) {
         frame = requestAnimationFrame(animate);
@@ -125,13 +125,6 @@ export default function ClsToOutputViz() {
     if (maxAbsWeight === 0) maxAbsWeight = 1;
   }
 
-  // Optimierte Thresholds für jede Klasse
-  const THRESHOLDS = [0.21, 0.76, 0.66, 0.21, 0.51, 0.11, 0.46, 0.11, 0.16, 0.26];
-
-  // Hilfsfunktion für Sigmoid
-  function sigmoid(z: number) {
-    return 1 / (1 + Math.exp(-z));
-  }
 
   return (
     <div ref={sectionRef} style={{ position: "relative", width, height, fontFamily: "sans-serif" }}>

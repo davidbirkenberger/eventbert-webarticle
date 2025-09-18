@@ -53,7 +53,6 @@ function normalize(points: { x: number; y: number }[], padding = 20) {
 }
 
 export default function VocabNeighborsViz({ 
-  vocabNeighbors, 
   fullVocabData,
   neighborsByToken,
   selectedToken,
@@ -341,22 +340,16 @@ export default function VocabNeighborsViz({
   // Auto-zoom when selectedToken changes (from TokenEmbeddingsPanel)
   useEffect(() => {
     if (selectedToken && sentencePoints.length > 0 && !isResetting) {
-      console.log("Selected token changed to:", selectedToken);
-      
       // Find the token in sentencePoints and use toAll for normalized coordinates
       const tokenPoint = sentencePoints.find(sp => sp.token === selectedToken);
-      console.log("Found tokenPoint:", tokenPoint);
       
       if (tokenPoint) {
         // Use toAll to get normalized coordinates (like before)
         const { x, y } = toAll(tokenPoint);
-        console.log("Normalized coordinates:", x, y);
         
         // Calculate pan to center this token
         const targetX = width / 2 - x;
         const targetY = height / 2 - y;
-        console.log("Target pan:", targetX, targetY);
-        console.log("Current zoom:", zoom, "pan:", panX, panY);
         
         // Animate smoothly to the target position
         const startZoom = zoom;
@@ -366,8 +359,6 @@ export default function VocabNeighborsViz({
         
         const duration = 800; // 800ms for smooth animation
         const startTime = Date.now();
-        
-        console.log("Starting animation...");
         
         const animate = () => {
           const elapsed = Date.now() - startTime;
@@ -380,22 +371,16 @@ export default function VocabNeighborsViz({
           const newPanX = startPanX + (targetX - startPanX) * easeOut;
           const newPanY = startPanY + (targetY - startPanY) * easeOut;
           
-          console.log("Animation frame:", progress, "zoom:", newZoom, "pan:", newPanX, newPanY);
-          
           setZoom(newZoom);
           setPanX(newPanX);
           setPanY(newPanY);
           
           if (progress < 1) {
             requestAnimationFrame(animate);
-          } else {
-            console.log("Animation finished");
           }
         };
         
         requestAnimationFrame(animate);
-      } else {
-        console.log("No tokenPoint found for token:", selectedToken);
       }
     }
   }, [selectedToken, sentencePoints, toAll, width, height, zoom, panX, panY]);
@@ -610,7 +595,7 @@ export default function VocabNeighborsViz({
             fontSize: "14px",
             color: "#333"
           }}>
-            Räumliche Nachbarn von "{selectedToken}"
+            Räumliche Nachbarn von &quot;{selectedToken}&quot;
           </div>
           {activeTokenNeighbors.map((neighbor, index) => (
             <div key={index} style={{

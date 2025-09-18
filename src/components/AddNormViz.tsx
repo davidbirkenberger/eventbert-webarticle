@@ -1,12 +1,12 @@
 import React from "react";
 import 'katex/dist/katex.min.css';
-import { InlineMath, BlockMath } from 'react-katex';
+import { InlineMath } from 'react-katex';
 
 interface AddNormVizProps {
   selectedTokenIndex?: number;
 }
 
-export default function AddNormViz({ selectedTokenIndex = 0 }: AddNormVizProps) {
+export default function AddNormViz({ }: AddNormVizProps) {
   const width = 800;
   const height = 400;
   const boxWidth = 200;

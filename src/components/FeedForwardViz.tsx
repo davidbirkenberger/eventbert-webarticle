@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useModelData } from "../hooks/useModelData";
 
 // Helper functions for line color/width (from ClsToOutputViz)
@@ -75,7 +75,6 @@ export default function FeedForwardViz({ selectedTokenIndex = 0, selectedLayerIn
   
   const token = tokens[selectedTokenIndex] || tokens[0] || "[CLS]";
   const numLayers = layers.length;
-  const layerDims = layers.map((l) => l.values[token]?.length || 0);
 
   // Layout - responsive design
   const neuronRadius = 20;

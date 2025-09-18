@@ -6,7 +6,6 @@ import { useSentenceAttention } from "../hooks/useSentenceAttention";
 import ClsToOutputViz from "../components/ClsToOutputViz";
 import SpecializedHeadViz from "../components/SpecializedHeadViz";
 import TokenEmbeddingsPanel from "../components/TokenEmbeddingsPanel";
-import AttentionMatrixViz from "../components/AttentionMatrixViz";
 
 import TransformerBlockWrapper from "../components/TransformerBlockWrapper";
 import LabeledContainer from "../components/LabeledContainer";
@@ -28,12 +27,6 @@ const RawTextCard: React.FC = () => {
   );
 };
 
-// Helper for rotated section titles
-const RotatedSectionTitle: React.FC<{ label: string }> = ({ label }) => (
-  <div className="writing-vertical-rl text-orientation-mixed font-bold text-2xl text-gray-600 mr-4 flex items-center tracking-wide min-w-8">
-    {label}
-  </div>
-);
 
 // Tokenized sentence component with same styling as TokenEmbeddingsPanel
 const TokenizedSentence: React.FC = () => {
@@ -66,108 +59,14 @@ const TokenizedSentence: React.FC = () => {
   );
 };
 
-// Layer selector component for transformer block
-const LayerSelector: React.FC<{ 
-  selectedIndex: number; 
-  onSelect: (index: number) => void; 
-}> = ({ selectedIndex, onSelect }) => {
-  const layerCount = 12; // Assuming 12 layers based on typical BERT architecture
-  
-  return (
-    <div className="flex items-center justify-center mb-4 gap-2">
-      <span className="text-base text-gray-600 mr-2">Layer:</span>
-      <div className="flex gap-1 items-center flex-wrap">
-        {Array.from({ length: layerCount }, (_, i) => (
-          <button
-            key={i}
-            onClick={() => onSelect(i)}
-            className={`px-2 py-1 border border-gray-300 rounded text-xs font-mono cursor-pointer transition-colors ${
-              i === selectedIndex 
-                ? "bg-blue-50 text-blue-700 font-bold" 
-                : "bg-white text-gray-600 hover:bg-gray-50"
-            }`}
-          >
-            {i}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-};
 
-// Head selector component for attention visualization
-const HeadSelector: React.FC<{ 
-  selectedIndex: number; 
-  onSelect: (index: number) => void; 
-}> = ({ selectedIndex, onSelect }) => {
-  const headCount = 12; // Assuming 12 heads based on typical BERT architecture
-  
-  return (
-    <div className="flex items-center justify-center mb-4 gap-2">
-      <span className="text-base text-gray-600 mr-2">Head:</span>
-      <div className="flex gap-1 items-center flex-wrap">
-        {Array.from({ length: headCount }, (_, i) => (
-          <button
-            key={i}
-            onClick={() => onSelect(i)}
-            className={`px-2 py-1 border border-gray-300 rounded text-xs font-mono cursor-pointer transition-colors ${
-              i === selectedIndex 
-                ? "bg-blue-50 text-blue-700 font-bold" 
-                : "bg-white text-gray-600 hover:bg-gray-50"
-            }`}
-          >
-            {i}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-};
 
-// Token selector component for transformer block
-const TokenSelector: React.FC<{ 
-  tokens: string[]; 
-  selectedIndex: number; 
-  onSelect: (index: number) => void; 
-}> = ({ tokens, selectedIndex, onSelect }) => {
-  return (
-    <div className="flex items-center justify-center mb-6 gap-2">
-      <button 
-        onClick={() => onSelect((selectedIndex - 1 + tokens.length) % tokens.length)}
-        className="text-2xl border-none bg-transparent cursor-pointer text-gray-600 p-2 rounded-md"
-      >
-        &larr;
-      </button>
-      <div className="flex gap-2 items-center font-mono text-lg">
-        {tokens.map((token, i) => (
-          <button
-            key={i}
-            onClick={() => onSelect(i)}
-            className={`px-3 py-1 border border-gray-300 rounded text-sm font-mono transition-colors ${
-              i === selectedIndex 
-                ? "bg-blue-50 text-blue-700 font-bold" 
-                : "bg-white text-gray-600 hover:bg-gray-50"
-            }`}
-          >
-            {token}
-          </button>
-        ))}
-      </div>
-      <button 
-        onClick={() => onSelect((selectedIndex + 1) % tokens.length)}
-        className="text-2xl border-none bg-transparent cursor-pointer text-gray-600 p-2 rounded-md"
-      >
-        &rarr;
-      </button>
-    </div>
-  );
-};
 
 export default function Page() {
   // Use the new consolidated data hook
-  const { data: modelData, loading, error } = useModelData();
-  const { data: vocabNeighbors, loading: vocabLoading, error: vocabError, fullVocabData, neighborsByToken } = useVocabNeighbors();
-  const { data: sentenceAttentionData, loading: sentenceAttentionLoading, error: sentenceAttentionError } = useSentenceAttention();
+  const { data: modelData } = useModelData();
+  const { data: vocabNeighbors, loading: vocabLoading, fullVocabData, neighborsByToken } = useVocabNeighbors();
+  const { data: sentenceAttentionData } = useSentenceAttention();
   
 
   
@@ -178,15 +77,8 @@ export default function Page() {
   const [selectedHeadIndex, setSelectedHeadIndex] = useState<number>(0);
   
   // State for embedding 2D map
-  const [embedding2d, setEmbedding2d] = useState<any[]>([]);
   const [selectedToken, setSelectedToken] = useState<string | null>(null);
   
-  // Debug logging
-  console.log("Page: vocabNeighbors:", vocabNeighbors);
-  console.log("Page: vocabLoading:", vocabLoading);
-  console.log("Page: vocabError:", vocabError);
-  console.log("Page: embedding2d:", embedding2d);
-  console.log("Page: modelData:", modelData);
 
   // Process attention data when model data changes
   useEffect(() => {
@@ -201,17 +93,6 @@ export default function Page() {
     }
   }, [modelData, selectedLayerIndex, selectedHeadIndex]);
 
-  // Process 2D embeddings when model data changes
-  useEffect(() => {
-    if (modelData && modelData.token_embeddings["2d"]) {
-      const data = Object.entries(modelData.token_embeddings["2d"]).map(([token, coords]) => ({
-        token,
-        x: coords.x,
-        y: coords.y
-      }));
-      setEmbedding2d(data);
-    }
-  }, [modelData]);
     return (
     <main className="px-16 py-16 box-border max-w-7xl mx-auto overflow-x-hidden">
       {/* Title and subtitle */}

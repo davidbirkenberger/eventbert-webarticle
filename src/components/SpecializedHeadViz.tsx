@@ -61,14 +61,6 @@ export default function SpecializedHeadViz({
     const head1Data = sentenceAttentionData.attention_matrices[head1Key];
     const head2Data = sentenceAttentionData.attention_matrices[head2Key];
     
-    console.log("Word-level attention data:", {
-      head1Key,
-      head2Key,
-      head1Data,
-      head2Data,
-      sentenceAttentionData,
-      availableKeys: Object.keys(sentenceAttentionData.attention_matrices)
-    });
     
     displayExamples = [];
     
@@ -77,11 +69,6 @@ export default function SpecializedHeadViz({
       const wordAttentionMatrix = head1Data.word_attention;
       const words = sentenceAttentionData.words;
       
-      console.log("Processing head 1:", {
-        wordAttentionMatrix,
-        words,
-        matrixShape: wordAttentionMatrix.length
-      });
       
       // Create highlighted connections based on word attention weights
       const highlightedConnections: Array<{from: number, to: number}> = [];
@@ -100,7 +87,6 @@ export default function SpecializedHeadViz({
       }
       
       highlightedConnections.push(strongestConnection);
-      console.log("Head 1 (L7-H6) strongest connection:", strongestConnection, "weight:", maxWeight);
       
       displayExamples.push({
         sentence: sentenceAttentionData.sentence,
@@ -109,7 +95,6 @@ export default function SpecializedHeadViz({
         highlightedConnections: highlightedConnections
       });
     } else {
-      console.log("Head 1 data not found!");
     }
     
     // Add second head
@@ -117,17 +102,12 @@ export default function SpecializedHeadViz({
       const wordAttentionMatrix = head2Data.word_attention;
       const words = sentenceAttentionData.words;
       
-      console.log("Processing head 2:", {
-        wordAttentionMatrix,
-        words,
-        matrixShape: wordAttentionMatrix.length
-      });
       
       // Create highlighted connections based on word attention weights
       const highlightedConnections: Array<{from: number, to: number}> = [];
       
       // Find the two strongest connections for the second head (L7-H6)
-      let connections: Array<{from: number, to: number, weight: number}> = [];
+      const connections: Array<{from: number, to: number, weight: number}> = [];
       
       for (let from = 0; from < wordAttentionMatrix.length; from++) {
         for (let to = 0; to < wordAttentionMatrix[from].length; to++) {
@@ -142,7 +122,6 @@ export default function SpecializedHeadViz({
       const top2Connections = connections.slice(0, 2);
       
       highlightedConnections.push(...top2Connections.map(conn => ({ from: conn.from, to: conn.to })));
-      console.log("Head 2 (L7-H6) top 2 connections:", top2Connections);
       
       displayExamples.push({
         sentence: sentenceAttentionData.sentence,
@@ -151,7 +130,6 @@ export default function SpecializedHeadViz({
         highlightedConnections: highlightedConnections
       });
     } else {
-      console.log("Head 2 data not found, creating placeholder");
       // Create a placeholder for the second head if data is missing
       const words = sentenceAttentionData.words;
       const placeholderMatrix = Array(words.length).fill(0).map(() => Array(words.length).fill(0.1));

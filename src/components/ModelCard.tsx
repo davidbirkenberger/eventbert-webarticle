@@ -55,7 +55,7 @@ const ModelCard: React.FC<ModelCardProps> = ({ className = "" }) => {
                              <LabeledContainer label="Trainingsdaten">
                  <div style={{ fontSize: "14px", color: "#6b7280" }}>
                    <div><strong>Basismodell (dbmdz):</strong> Wikipedia Dump, EU Bookshop, Open Subtitles, CommonCrawl, ParaCrawl, News Crawl</div>
-                   <div><strong>Finetuning:</strong> 198 Unternehmenswebseiten (Indexseite + ggf. „Über uns"-Seite)</div>
+                   <div><strong>Finetuning:</strong> 198 Unternehmenswebseiten (Indexseite + ggf. &quot;Über uns&quot;-Seite)</div>
                    <div><strong>Labels:</strong> 10 Cluster nach Veranstaltungslandkarte für Deutschland (Zanger & Klaus, 2021)</div>
                  </div>
                </LabeledContainer>

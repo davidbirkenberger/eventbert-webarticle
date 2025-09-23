@@ -1,6 +1,6 @@
 # A Look Inside the Blackbox: BERT Visualization
 
-An interactive article visualizing how BERT understands website texts from the event industry. This project follows a single sentence through all stages of model processing – from tokenization to final classification.
+An interactive article showing how BERT understands website texts from the event industry. This project follows a single sentence through all stages of model processing – from tokenization to final classification.
 
 ## 🎯 About the Project
 

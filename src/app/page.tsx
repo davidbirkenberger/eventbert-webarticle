@@ -158,15 +158,17 @@ export default function Page() {
                     loading={vocabLoading} 
                     error={!vocabNeighbors && !vocabLoading ? 'Vocabulary data not available' : null}
                   >
-                    <VocabNeighborsViz
-                      vocabNeighbors={vocabNeighbors}
-                      fullVocabData={fullVocabData}
-                      neighborsByToken={neighborsByToken}
-                      selectedToken={selectedToken}
-                      onTokenSelect={setSelectedToken}
-                      width={900}
-                      height={520}
-                    />
+                    {vocabNeighbors && (
+                      <VocabNeighborsViz
+                        vocabNeighbors={vocabNeighbors}
+                        fullVocabData={fullVocabData}
+                        neighborsByToken={neighborsByToken}
+                        selectedToken={selectedToken}
+                        onTokenSelect={setSelectedToken}
+                        width={900}
+                        height={520}
+                      />
+                    )}
                   </DataErrorBoundary>
                 </div>
 
@@ -236,14 +238,16 @@ Dieses Token hat keine eigene Bedeutung im Sprachsinn. Stattdessen dient es als 
                   loading={!sentenceAttentionData} 
                   error={!sentenceAttentionData ? 'Attention head data not available' : null}
                 >
-                  <SpecializedHeadViz 
-                    headTitle="Spezialisierte Attention-Heads"
-                    description=""
-                    useWordLevelData={true}
-                    sentenceAttentionData={sentenceAttentionData}
-                    layerIndex={7}
-                    headIndex={6}
-                  />
+                  {sentenceAttentionData && (
+                    <SpecializedHeadViz 
+                      headTitle="Spezialisierte Attention-Heads"
+                      description=""
+                      useWordLevelData={true}
+                      sentenceAttentionData={sentenceAttentionData}
+                      layerIndex={7}
+                      headIndex={6}
+                    />
+                  )}
                 </DataErrorBoundary>
                 <p className="text-base text-gray-700 mt-4">Jede dieser Komponenten trägt zur schrittweisen Bedeutungsbildung bei. Gemeinsam erzeugen sie eine strukturierte Repräsentation – viele kleine Entscheidungen, die nach und nach im CLS-Vektor verdichtet werden.</p>
                 

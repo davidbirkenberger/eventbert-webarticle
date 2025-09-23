@@ -1,97 +1,61 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useModelData } from "@/hooks/useModelData";
 import { useVocabNeighbors } from "../hooks/useVocabNeighbors";
 import { useSentenceAttention } from "../hooks/useSentenceAttention";
+import { useAttentionVisualization } from "../hooks/useAttentionVisualization";
 import ClsToOutputViz from "../components/ClsToOutputViz";
 import SpecializedHeadViz from "../components/SpecializedHeadViz";
 import TokenEmbeddingsPanel from "../components/TokenEmbeddingsPanel";
-
 import TransformerBlockWrapper from "../components/TransformerBlockWrapper";
 import LabeledContainer from "../components/LabeledContainer";
 import VocabNeighborsViz from "../components/VocabNeighborsViz";
 import ModelCard from "../components/ModelCard";
+import RawTextCard from "../components/RawTextCard";
+import TokenizedSentence from "../components/TokenizedSentence";
+import DataErrorBoundary from "../components/DataErrorBoundary";
+import DataLoadingState from "../components/DataLoadingState";
 
-// Helper component for the raw text card
-const RawTextCard: React.FC = () => {
-  const { data, loading } = useModelData();
-  
-  if (loading) return <div>Loading...</div>;
-  
-  const text = data?.text || "Wir bieten elegantes Catering und exklusive Locations für unvergessliche Veranstaltungen.";
-
-  return (
-    <div className="border-none rounded-xl bg-gray-50 shadow-none p-6 min-w-[500px] max-w-[700px] flex-1 flex flex-col min-h-[120px] justify-center relative">
-      <div className="text-2xl text-gray-600 leading-relaxed font-medium font-mono">{text}</div>
-    </div>
-  );
-};
-
-
-// Tokenized sentence component with same styling as TokenEmbeddingsPanel
-const TokenizedSentence: React.FC = () => {
-  const { data, loading } = useModelData();
-  
-  if (loading) return <div>Loading...</div>;
-  
-  const tokens = data?.tokens || ["[CLS]", "mit", "unseren", "sna", "##cks", "bieten", "wir", "das", "beste", "cater", "##ing", ".", "[SEP]"];
-
-  return (
-    <div className="font-mono text-xl">
-      <div className="mb-4 flex gap-2">
-        {tokens.slice(0, 10).map((token, i) => (
-          <span
-            key={i}
-            className={`inline-block align-bottom leading-[50px] ${
-              token === "[CLS]" 
-                ? "font-bold text-4xl opacity-100" 
-                : "font-normal text-xl opacity-40"
-            }`}
-          >
-            {token}
-          </span>
-        ))}
-        {tokens.length > 10 && (
-          <span className="text-xl opacity-40 align-bottom leading-[50px]">...</span>
-        )}
-      </div>
-    </div>
-  );
-};
 
 
 
 
 export default function Page() {
-  // Use the new consolidated data hook
-  const { data: modelData } = useModelData();
+  // Use the consolidated data hooks
+  const { data: modelData, loading: modelLoading } = useModelData();
   const { data: vocabNeighbors, loading: vocabLoading, fullVocabData, neighborsByToken } = useVocabNeighbors();
   const { data: sentenceAttentionData } = useSentenceAttention();
   
+  // Use the consolidated attention visualization hook
+  const {
+    attentionData,
+    selectedTokenIndex,
+    selectedLayerIndex,
+    selectedHeadIndex,
+    selectedToken,
+    setSelectedTokenIndex,
+    setSelectedLayerIndex,
+    setSelectedHeadIndex,
+    setSelectedToken,
+  } = useAttentionVisualization();
 
-  
-  // State for attention visualization
-  const [attentionData, setAttentionData] = useState<{ tokens: string[]; attention: number[][] } | null>(null);
-  const [selectedTokenIndex, setSelectedTokenIndex] = useState<number>(0);
-  const [selectedLayerIndex, setSelectedLayerIndex] = useState<number>(0);
-  const [selectedHeadIndex, setSelectedHeadIndex] = useState<number>(0);
-  
-  // State for embedding 2D map
-  const [selectedToken, setSelectedToken] = useState<string | null>(null);
-  
-
-  // Process attention data when model data changes
-  useEffect(() => {
-    if (modelData && modelData.attention_data) {
-      const layerKey = `layer_${selectedLayerIndex}`;
-      const headKey = `head_${selectedHeadIndex}`;
-      
-      if (modelData.attention_data[layerKey] && modelData.attention_data[layerKey][headKey]) {
-        const matrix = modelData.attention_data[layerKey][headKey];
-        setAttentionData({ tokens: modelData.tokens, attention: matrix });
-      }
-    }
-  }, [modelData, selectedLayerIndex, selectedHeadIndex]);
+  // Show loading state if main model data is still loading
+  if (modelLoading) {
+    return (
+      <main className="px-16 py-16 box-border max-w-7xl mx-auto overflow-x-hidden">
+        <div className="mb-16">
+          <h1 className="text-5xl font-bold leading-tight mb-4">Ein Blick in die Blackbox</h1>
+          <div className="text-lg text-gray-600 mt-4 font-normal">
+            Wie BERT Website-Texte der Eventbranche versteht
+          </div>
+        </div>
+        <DataLoadingState 
+          message="Lade BERT-Modell Daten..."
+          className="min-h-[400px]"
+        />
+      </main>
+    );
+  }
 
     return (
     <main className="px-16 py-16 box-border max-w-7xl mx-auto overflow-x-hidden">
@@ -106,7 +70,7 @@ export default function Page() {
           <span>•</span>
           <span>Oktober 2025</span>
           <span>•</span>
-          <a href="https://github.com/davidbirkenberger/mechinterp_article" className="text-gray-600 no-underline hover:underline">
+          <a href="https://github.com/davidbirkenberger/eventbert-webarticle" className="text-gray-600 no-underline hover:underline">
             GitHub
           </a>
         </div>
@@ -119,14 +83,12 @@ export default function Page() {
         <nav className="sticky top-20 w-52 h-fit-content flex-shrink-0 bg-transparent p-5">
           <div className="font-bold text-3xl mb-6 text-gray-600">Inhalt</div>
           <ul className="list-none p-0 m-0 text-lg text-gray-600">
-            <li className="mb-4"><a href="#model-card" className="text-gray-600 no-underline hover:underline">Model Card</a></li>
             <li className="mb-4"><a href="#unternehmenstext" className="text-gray-600 no-underline hover:underline">Website-Text</a></li>
             <li className="mb-4"><a href="#embeddings" className="text-gray-600 no-underline hover:underline">Embeddings</a></li>
-            <li className="mb-4"><a href="#vocab-neighbors" className="text-gray-600 no-underline hover:underline">Vocabulary Neighbors</a></li>
-            <li className="mb-4"><a href="#cls-token" className="text-gray-600 no-underline hover:underline">CLS-Token</a></li>
             <li className="mb-4"><a href="#transformer-block" className="text-gray-600 no-underline hover:underline">Transformer Block</a></li>
             <li className="mb-4"><a href="#specialized-components" className="text-gray-600 no-underline hover:underline">Specialized Components</a></li>
             <li className="mb-4"><a href="#klassifizierung" className="text-gray-600 no-underline hover:underline">Klassifizierung</a></li>
+            <li className="mb-4"><a href="#model-card" className="text-gray-600 no-underline hover:underline">Model Card</a></li>
           </ul>
         </nav>
 
@@ -192,7 +154,10 @@ export default function Page() {
                 {/* Vocabulary space map */}
                 <div className="mt-8">
                   <div className="text-sm text-gray-600 mb-2">t-SNE Visualisierung des Vokabulars</div>
-                  {vocabNeighbors ? (
+                  <DataErrorBoundary 
+                    loading={vocabLoading} 
+                    error={!vocabNeighbors && !vocabLoading ? 'Vocabulary data not available' : null}
+                  >
                     <VocabNeighborsViz
                       vocabNeighbors={vocabNeighbors}
                       fullVocabData={fullVocabData}
@@ -202,12 +167,7 @@ export default function Page() {
                       width={900}
                       height={520}
                     />
-                  ) : (
-                    <div className="text-center py-10 text-gray-600">
-                      {vocabLoading || !modelData ? 'Loading vocabulary data...' : 'Vocabulary data not available'}
-                    </div>
-                  )}
-       
+                  </DataErrorBoundary>
                 </div>
 
               </LabeledContainer>
@@ -246,23 +206,21 @@ Dieses Token hat keine eigene Bedeutung im Sprachsinn. Stattdessen dient es als 
               <p className="text-base text-gray-700 mb-8">
                 Bei BERT werden insgesamt 12 solcher Blöcke durchlaufen. Jeder einzelne fügt ein weiteres Stück Verarbeitung hinzu – kleine Veränderungen, die sich im Laufe der Schichten zu einem tiefen Sprachverständnis summieren.
               </p>
-                {attentionData ? (
-                  <>
-
-                    <TransformerBlockWrapper 
-                      attentionTokens={attentionData.tokens} 
-                      attentionMatrix={attentionData.attention}
-                      selectedTokenIndex={selectedTokenIndex}
-                      selectedLayerIndex={selectedLayerIndex}
-                      selectedHeadIndex={selectedHeadIndex}
-                      onHeadSelect={setSelectedHeadIndex}
-                      onTokenSelect={setSelectedTokenIndex}
-                      onLayerChange={setSelectedLayerIndex}
-                    />
-                  </>
-                ) : (
-                  <div className="text-center py-8 text-gray-600">Lade Attention-Daten…</div>
-                )}
+                <DataErrorBoundary 
+                  loading={!attentionData} 
+                  error={!attentionData ? 'Attention data not available' : null}
+                >
+                  <TransformerBlockWrapper 
+                    attentionTokens={attentionData?.tokens || []} 
+                    attentionMatrix={attentionData?.attention || []}
+                    selectedTokenIndex={selectedTokenIndex}
+                    selectedLayerIndex={selectedLayerIndex}
+                    selectedHeadIndex={selectedHeadIndex}
+                    onHeadSelect={setSelectedHeadIndex}
+                    onTokenSelect={setSelectedTokenIndex}
+                    onLayerChange={setSelectedLayerIndex}
+                  />
+                </DataErrorBoundary>
             </div>
           </section>
           <section id="specialized-components">
@@ -274,7 +232,10 @@ Dieses Token hat keine eigene Bedeutung im Sprachsinn. Stattdessen dient es als 
               <p className="text-base text-gray-700 mb-6">Aber warum braucht es so viele sich ähnelnde, wiederholte Komponenten?
               Sprachverstehen lässt sich als Zusammenspiel vieler Teilaufgaben denken – etwa zu erkennen, auf welches Nomen sich ein Adjektiv bezieht oder welche Entität mit einem Pronomen gemeint ist.</p>
               <p className="text-base text-gray-700 mb-8">Analysen haben gezeigt, dass in BERT-Modellen spezialisierte Attention-Heads entstehen, die genau solche Aufgaben übernehmen. Auch in unserem Modell lassen sich diese Spezialisierungen beobachten: So verdeutlichen L7-H10 und L7-H6, wie verschiedene Köpfe jeweils unterschiedliche Relationen zwischen Wörtern abbilden.</p>
-                {sentenceAttentionData ? (
+                <DataErrorBoundary 
+                  loading={!sentenceAttentionData} 
+                  error={!sentenceAttentionData ? 'Attention head data not available' : null}
+                >
                   <SpecializedHeadViz 
                     headTitle="Spezialisierte Attention-Heads"
                     description=""
@@ -283,9 +244,7 @@ Dieses Token hat keine eigene Bedeutung im Sprachsinn. Stattdessen dient es als 
                     layerIndex={7}
                     headIndex={6}
                   />
-                ) : (
-                  <div className="text-center py-8 text-gray-600">Lade Attention-Head-Daten…</div>
-                )}
+                </DataErrorBoundary>
                 <p className="text-base text-gray-700 mt-4">Jede dieser Komponenten trägt zur schrittweisen Bedeutungsbildung bei. Gemeinsam erzeugen sie eine strukturierte Repräsentation – viele kleine Entscheidungen, die nach und nach im CLS-Vektor verdichtet werden.</p>
                 
                 

@@ -14,51 +14,22 @@ const TokenSelectorDropdown: React.FC<{
   const [isOpen, setIsOpen] = useState(false);
   
   return (
-    <div style={{ position: "relative", marginBottom: "16px" }}>
+    <div className="relative mb-4">
       {/* Token Dropdown */}
-      <div style={{
-        position: "relative",
-        display: "inline-block"
-      }}>
+      <div className="relative inline-block">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          style={{
-            padding: "8px 12px",
-            border: "1px solid #ddd",
-            borderRadius: "6px",
-            background: "#fff",
-            color: "#666",
-            cursor: "pointer",
-            fontSize: "14px",
-            fontFamily: "monospace",
-            minWidth: "120px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.1)"
-          }}
+          className="px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-600 cursor-pointer text-sm font-mono min-w-[120px] flex items-center justify-between shadow-sm hover:bg-gray-50 transition-colors"
         >
           <span>{tokens[selectedIndex] || "[CLS]"}</span>
-          <span style={{ fontSize: "12px", marginLeft: "8px" }}>
+          <span className="text-xs ml-2">
             {isOpen ? "▲" : "▼"}
           </span>
         </button>
         
         {/* Dropdown Menu */}
         {isOpen && (
-          <div style={{
-            position: "absolute",
-            top: "100%",
-            left: 0,
-            right: 0,
-            background: "#fff",
-            border: "1px solid #ddd",
-            borderRadius: "6px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-            zIndex: 1000,
-            maxHeight: "200px",
-            overflowY: "auto"
-          }}>
+          <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg z-50 max-h-48 overflow-y-auto">
             {tokens.map((token, i) => (
               <button
                 key={i}
@@ -66,29 +37,11 @@ const TokenSelectorDropdown: React.FC<{
                   onSelect(i);
                   setIsOpen(false);
                 }}
-                style={{
-                  width: "100%",
-                  padding: "8px 12px",
-                  border: "none",
-                  background: i === selectedIndex ? "#e3f2fd" : "#fff",
-                  color: i === selectedIndex ? "#1976d2" : "#666",
-                  cursor: "pointer",
-                  fontSize: "14px",
-                  fontFamily: "monospace",
-                  textAlign: "left",
-                  borderBottom: "1px solid #f0f0f0",
-                  transition: "background 0.2s ease"
-                }}
-                onMouseEnter={(e) => {
-                  if (i !== selectedIndex) {
-                    e.currentTarget.style.background = "#f5f5f5";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (i !== selectedIndex) {
-                    e.currentTarget.style.background = "#fff";
-                  }
-                }}
+                className={`w-full px-3 py-2 border-none text-left text-sm font-mono border-b border-gray-100 transition-colors ${
+                  i === selectedIndex 
+                    ? "bg-blue-50 text-blue-700" 
+                    : "bg-white text-gray-600 hover:bg-gray-50"
+                }`}
               >
                 {token}
               </button>
@@ -159,16 +112,7 @@ const BlockInfoText: React.FC<{ blockType: string }> = ({ blockType }) => {
 
   return (
     <div 
-      style={{
-        fontSize: "14px",
-        color: "#666",
-        lineHeight: "1.6",
-        marginBottom: "8px",
-        padding: "16px",
-        background: "#f8f9fa",
-        borderRadius: "8px",
-        border: "1px solid #e9ecef"
-      }}
+      className="text-sm text-gray-600 leading-relaxed mb-2 p-4 bg-gray-50 rounded-lg border border-gray-200"
       dangerouslySetInnerHTML={{ __html: infoTexts[blockType as keyof typeof infoTexts] || "" }}
     />
   );
@@ -198,24 +142,11 @@ export default function TransformerBlockWrapper({
   const [selectedBlock, setSelectedBlock] = useState<"attention" | "feedforward" | "addnorm" | "addnorm2">("attention");
 
   return (
-    <div style={{ 
-      display: "flex", 
-      flexDirection: "column",
-      gap: "24px",
-      width: "100%"
-    }}>
+    <div className="flex flex-col gap-6 w-full">
       {/* Hauptbereich: Block-Diagramm + Visualisierung */}
-      <div style={{ 
-        display: "flex", 
-        alignItems: "flex-start", 
-        gap: "32px",
-        flexWrap: "wrap"
-      }}>
+      <div className="flex items-start gap-8 flex-wrap">
         {/* Linke Spalte: Transformer Block Diagram */}
-        <div style={{ 
-          flex: "0 0 auto",
-          minWidth: "280px"
-        }}>
+        <div className="flex-none min-w-[280px]">
           {/* Transformer Block Chart */}
           <TransformerBlockChart 
             selected={selectedBlock} 
@@ -226,62 +157,25 @@ export default function TransformerBlockWrapper({
         </div>
 
         {/* Rechte Spalte: Detaillierte Visualisierung */}
-        <div style={{ 
-          flex: "1",
-          minWidth: "400px",
-          width: "100%"
-        }}>
+        <div className="flex-1 min-w-[400px] w-full">
           {selectedBlock === "attention" ? (
-            <div style={{
-              border: "1px solid #ddd",
-              borderRadius: "12px",
-              background: "#fff",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-              padding: "24px",
-              position: "relative",
-              width: "100%"
-            }}>
-              <div style={{ 
-                fontSize: "12px", 
-                color: "#999", 
-                position: "absolute",
-                top: "-8px",
-                left: "12px",
-                background: "#fff",
-                padding: "0 8px"
-              }}>Multi-Head Attention</div>
+            <div className="border border-gray-300 rounded-xl bg-white shadow-sm p-6 relative w-full">
+              <div className="text-xs text-gray-400 absolute -top-2 left-3 bg-white px-2">
+                Multi-Head Attention
+              </div>
               
               <HeadSelector selectedIndex={selectedHeadIndex} onSelect={onHeadSelect || (() => {})} />
               <AttentionMatrixViz tokens={attentionTokens} attention={attentionMatrix} selectedTokenIndex={selectedTokenIndex} />
             </div>
           ) : selectedBlock === "feedforward" ? (
-            <div style={{
-              border: "1px solid #ddd",
-              borderRadius: "12px",
-              background: "#fff",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-              padding: "24px",
-              position: "relative",
-              width: "100%"
-            }}>
-              <div style={{ 
-                fontSize: "12px", 
-                color: "#999", 
-                position: "absolute",
-                top: "-8px",
-                left: "12px",
-                background: "#fff",
-                padding: "0 8px"
-              }}>Feed-Forward Network</div>
+            <div className="border border-gray-300 rounded-xl bg-white shadow-sm p-6 relative w-full">
+              <div className="text-xs text-gray-400 absolute -top-2 left-3 bg-white px-2">
+                Feed-Forward Network
+              </div>
               
               {/* Token selector only for feedforward block */}
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "24px" }}>
-                <div style={{ 
-                  fontSize: "14px", 
-                  color: "#666", 
-                  marginBottom: "8px",
-                  fontWeight: "500"
-                }}>
+              <div className="flex flex-col items-center mb-6">
+                <div className="text-sm text-gray-600 mb-2 font-medium">
                   Token auswählen:
                 </div>
                 <TokenSelectorDropdown 
@@ -294,46 +188,18 @@ export default function TransformerBlockWrapper({
               <FeedForwardViz selectedTokenIndex={selectedTokenIndex} selectedLayerIndex={selectedLayerIndex} />
             </div>
           ) : selectedBlock === "addnorm2" ? (
-            <div style={{
-              border: "1px solid #ddd",
-              borderRadius: "12px",
-              background: "#fff",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-              padding: "24px",
-              position: "relative",
-              width: "100%"
-            }}>
-              <div style={{ 
-                fontSize: "12px", 
-                color: "#999", 
-                position: "absolute",
-                top: "-8px",
-                left: "12px",
-                background: "#fff",
-                padding: "0 8px"
-              }}>Add & Norm (MLP)</div>
+            <div className="border border-gray-300 rounded-xl bg-white shadow-sm p-6 relative w-full">
+              <div className="text-xs text-gray-400 absolute -top-2 left-3 bg-white px-2">
+                Add & Norm (MLP)
+              </div>
               
               <AddNormViz2 selectedTokenIndex={selectedTokenIndex} />
             </div>
           ) : (
-            <div style={{
-              border: "1px solid #ddd",
-              borderRadius: "12px",
-              background: "#fff",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-              padding: "24px",
-              position: "relative",
-              width: "100%"
-            }}>
-              <div style={{ 
-                fontSize: "12px", 
-                color: "#999", 
-                position: "absolute",
-                top: "-8px",
-                left: "12px",
-                background: "#fff",
-                padding: "0 8px"
-              }}>Add & Norm</div>
+            <div className="border border-gray-300 rounded-xl bg-white shadow-sm p-6 relative w-full">
+              <div className="text-xs text-gray-400 absolute -top-2 left-3 bg-white px-2">
+                Add & Norm
+              </div>
               
               <AddNormViz selectedTokenIndex={selectedTokenIndex} />
             </div>

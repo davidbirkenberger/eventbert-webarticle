@@ -22,7 +22,7 @@ import DataLoadingState from "../components/DataLoadingState";
 
 export default function Page() {
   // Use the consolidated data hooks
-  const { data: modelData, loading: modelLoading } = useModelData();
+  const { loading: modelLoading } = useModelData();
   const { data: vocabNeighbors, loading: vocabLoading, fullVocabData, neighborsByToken } = useVocabNeighbors();
   const { data: sentenceAttentionData } = useSentenceAttention();
   

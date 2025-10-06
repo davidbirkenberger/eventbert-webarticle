@@ -12,8 +12,14 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* Force light mode - override system dark mode preference */
+html.light {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.light) {
     --background: #0a0a0a;
     --foreground: #ededed;
   }

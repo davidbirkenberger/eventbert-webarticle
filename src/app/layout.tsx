@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="de" className={`${inter.variable} antialiased`}>
+    <html lang="de" className={`${inter.variable} antialiased light`} style={{ colorScheme: 'light' }}>
       <body>
         <ErrorBoundary>
           {children}
